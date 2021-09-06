@@ -1,4 +1,4 @@
-package kursy;
+package nbpcurrency;
 
 import java.io.StringReader;
 import java.net.URI;
