@@ -1,6 +1,6 @@
 package service;
 
-public class NbpApiResponse {
+public class ApiResponse {
 	int code = 0;
 	String text;
 	

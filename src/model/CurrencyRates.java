@@ -1,13 +1,14 @@
 package model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public class NbpRates {
+public class CurrencyRates {
 	String no;
 	LocalDate effectiveDate;
-	double bid;
-	double ask;
-	double mid;
+	BigDecimal bid;
+	BigDecimal ask;
+	BigDecimal mid;
 	
 	public String getNo() {
 		return no;
@@ -25,27 +26,27 @@ public class NbpRates {
 		this.effectiveDate = effectiveDate;
 	}
 	
-	public double getBid() {
+	public BigDecimal getBid() {
 		return bid;
 	}
 	
-	public void setBid(double bid) {
+	public void setBid(BigDecimal bid) {
 		this.bid = bid;
 	}
 	
-	public double getAsk() {
+	public BigDecimal getAsk() {
 		return ask;
 	}
 	
-	public void setAsk(double ask) {
+	public void setAsk(BigDecimal ask) {
 		this.ask = ask;
 	}
 	
-	public double getMid() {
+	public BigDecimal getMid() {
 		return mid;
 	}
 	
-	public void setMid(double mid) {
+	public void setMid(BigDecimal mid) {
 		this.mid = mid;
 	}
 }

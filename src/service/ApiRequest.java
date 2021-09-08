@@ -3,7 +3,7 @@ package service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class NbpApiRequest {
+public class ApiRequest {
 	private final String host = "http://api.nbp.pl/api/exchangerates/";
 	String tableType;
 	String currency;

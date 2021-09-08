@@ -9,8 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import model.NbpCurrency;
-
 public class XmlParser {
 	
 	public static Document loadXmlFromString(String xml) {

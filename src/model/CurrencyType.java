@@ -1,10 +1,10 @@
 package model;
 
-public class NbpCurrency {
+public class CurrencyType {
 	String table;
 	String currency;
 	String code;
-	NbpRates rates;
+	CurrencyRates rates;
 	
 	public String getTable() {
 		return table;
@@ -30,11 +30,11 @@ public class NbpCurrency {
 		this.code = code;
 	}
 	
-	public NbpRates getRates() {
+	public CurrencyRates getRates() {
 		return rates;
 	}
 	
-	public void setRates(NbpRates rates) {
+	public void setRates(CurrencyRates rates) {
 		this.rates = rates;
 	}
 }
