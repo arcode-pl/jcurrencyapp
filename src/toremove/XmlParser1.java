@@ -1,4 +1,4 @@
-package controller;
+package toremove;
 
 import java.io.StringReader;
 
@@ -9,7 +9,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-public class XmlParser {
+public class XmlParser1 {
 	
 	public static Document loadXmlFromString(String xml) {
 		Document doc = null;

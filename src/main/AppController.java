@@ -1,22 +1,15 @@
 package main;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDate;
+import java.util.Optional;
 
+import data.model.Currency;
+import data.model.CurrencyCodes;
+import data.provider.ProviderFactory;
+import data.provider.ProviderInterface;
 import exceptions.WrongCurrencyCodeException;
 import exceptions.WrongProtocolException;
-import model.CurrencyCodes;
-import model.CurrencyType;
-import service.ApiResponse;
-import strategy.parser.ParserFactory;
-import strategy.parser.ParserStrategy;
 
 public class AppController {
 	
@@ -27,30 +20,50 @@ public class AppController {
 	}
 	
 	//Ask for today exchange rates by default
-	public BigDecimal calculate(String code, BigDecimal count) throws WrongCurrencyCodeException, 
+	public Optional<BigDecimal> calculate(String code, BigDecimal count) throws WrongCurrencyCodeException, 
 		WrongProtocolException
 	{
 		return this.calculate(code, count, LocalDate.now());
 	}
 	
-	public BigDecimal calculate(String code, BigDecimal count, LocalDate date) throws WrongCurrencyCodeException, 
+	public Optional<BigDecimal> calculate(String code, BigDecimal count, LocalDate date) throws WrongCurrencyCodeException, 
 		WrongProtocolException 
 	{
-		CurrencyCodes.exist(code);
+		Optional<Currency> data;
 		
-		//Set date to today when ask for future
+		// Check for null in input
+		if (!inputsValid(code, count, date)) {
+			return Optional.empty();
+		}
+		
+		// Set date to today when ask for future
 		if (date.isAfter(LocalDate.now())) {
 			date = LocalDate.now();
 		}
 		
-		ParserStrategy<CurrencyType> strategy = ParserFactory.getStrategy(this.config.getParser());
-		strategy.parse(code);
+		// In this step we get currency model (rate, date, code) from provider.
+		ProviderInterface<Currency> provider = ProviderFactory.getProvider(config.getProvider());
+		if (provider != null) {
+			// Try get previous day
+			int retryCnt = 0;
+			while ((data = provider.getRate(code, date)).isEmpty() && retryCnt < 100) {
+				date = date.minusDays(1);
+				retryCnt++;
+			}
+			
+			if (data.isPresent()) {
+				count = count.multiply(data.get().getRate());
+				return Optional.of(count);
+			}
+		}
 		
-		return count;
+		return Optional.empty();
 	}
 	
-	
-	
+	private boolean inputsValid(String code, BigDecimal count, LocalDate date) throws WrongCurrencyCodeException {
+		return CurrencyCodes.exist(code) && count != null && date != null;
+	}
+
 	/*
 	 * // BUY: PLN <= CURRENCY public Optional<BigDecimal> buyPln(String currency,
 	 * BigDecimal count) { Optional<BigDecimal> value = null;
@@ -115,33 +128,7 @@ public class AppController {
 		return XmlParser.getSimpleRate(XmlParser.loadXmlFromString(response.text), "Mid") * count;
 	}*/
 	
-	private String readFile(String filePath) throws IOException {
-		return Files.readString(Path.of(filePath));
-	}
-	
-	public static ApiResponse readApi(String url) {
-		ApiResponse apiResponse = new ApiResponse();
-		
-		try {
-			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET() // GET is default
-                .build();
 
-			HttpResponse <String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-			
-			apiResponse.setCode(response.statusCode());
-			apiResponse.setText(response.body());
-			
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-        return apiResponse;
-	}
 
 	
 	

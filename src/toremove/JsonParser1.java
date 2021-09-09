@@ -1,6 +1,6 @@
-package controller;
+package toremove;
 
-public class JsonParser {
+public class JsonParser1 {
  
     public double getSimpleRate(String json, String rateType) {
     	String temp = "\"" + rateType + "\":";

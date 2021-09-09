@@ -1,14 +1,10 @@
-package model;
+package data.model;
 
 import java.util.Map;
-import java.util.Optional;
-
-import exceptions.WrongCurrencyCodeException;
 
 public class CurrencyCodes {
 	
-	//TODO: Dla ka¿dej waluty stworzyc model z tlumaczeniami lub resources?
-	// na ten moment po polsku
+	//TODO: Add resoursec or language extension class for this map
 	private static final Map<String, String> CODES = Map.ofEntries(
 			Map.entry("THB", "bat (Tajlandia)"),
 			Map.entry("USD", "dolar amerykañski"),
@@ -47,12 +43,8 @@ public class CurrencyCodes {
 			Map.entry("XDR", "SDR (MFW)")
 			);
 	
-	public static boolean exist(String code) throws WrongCurrencyCodeException {
-		if (CODES.get(code) == null) {
-			throw new WrongCurrencyCodeException();
-		}
-		
-		return true;
+	public static boolean exist(String code) {
+		return ((code != null ) && (CODES.get(code) != null));
 	}
 	
 	public static String getDescription(String code) {

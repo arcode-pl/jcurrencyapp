@@ -1,4 +1,4 @@
-package strategy.parser;
+package toremove;
 
 public class ParserTypes{
 	public static final int XML = 1;

@@ -1,44 +1,32 @@
 package main;
 
-import exceptions.WrongApiException;
+import data.provider.ProviderFactory;
+import data.provider.ProviderTypes;
+import exceptions.WrongProviderException;
 import exceptions.WrongProtocolException;
-import strategy.api.ApiFactory;
-import strategy.api.ApiTypes;
-import strategy.parser.ParserFactory;
-import strategy.parser.ParserTypes;
 
 public class AppConfig {
-	private int api;
-	private int parser;
+	private String provider;
 	
 	public AppConfig() {
-		this.api = ApiTypes.NBP;
-		this.parser = ParserTypes.JSON;
+		this.provider = ProviderTypes.NBP_WEB_API_JSON;
 	}
 	
-	public AppConfig(int api, int protocol) throws WrongProtocolException, WrongApiException {
-		ApiFactory.exist(api);
-		ParserFactory.exist(protocol);
+	public AppConfig(String provider) throws WrongProtocolException, WrongProviderException {
+		setProvider(provider);
+	}
+	
+	public String getProvider() {
+		return provider;
+	}
+	
+	public void setProvider(String provider) throws WrongProtocolException {
+		if (!ProviderFactory.exist(provider)) {
+			throw new WrongProtocolException();
+		}
 		
-		this.api = api;
-		this.parser = protocol;
+		this.provider = provider;
 	}
 	
-	public int getParser() {
-		return parser;
-	}
 	
-	public void setParser(int parser) throws WrongProtocolException {
-		ParserFactory.exist(parser);
-		this.parser = parser;
-	}
-	
-	public int getApi() {
-		return api;
-	}
-	
-	public void setApi(int api) throws WrongApiException {
-		ApiFactory.exist(api);
-		this.api = api;
-	}
 }
