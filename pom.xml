@@ -1,13 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>JCurrencyApp</groupId>
-  <artifactId>JCurrencyApp</artifactId>
+  
+  <groupId>pl.arcode</groupId>
+  <artifactId>jcurrencyapp</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+  
   <properties>
     <project.build.sourceEncoding>ISO-8859-1</project.build.sourceEncoding>
   </properties>
   <build>
-    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -19,16 +21,21 @@
     </plugins>
   </build>
   <dependencies>
-	 <dependency>
+	 <!-- <dependency>
 	    <groupId>com.fasterxml.jackson.core</groupId>
 	    <artifactId>jackson-databind</artifactId>
 	    <version>2.7.4</version>
 	</dependency>
 	<dependency>
-	    <groupId>com.fasterxml.jackson.core</groupId>
+	    <groupId>com.fasterxml.jackson.</groupId>
 	    <artifactId>jackson-core</artifactId>
 	    <version>2.7.4</version>
-	</dependency>
+	</dependency> -->
+	<dependency>
+      <groupId>com.fasterxml.jackson.dataformat</groupId>
+      <artifactId>jackson-dataformat-xml</artifactId>
+      <version>2.11.2</version>
+    </dependency>
   </dependencies>
 </project>
 
