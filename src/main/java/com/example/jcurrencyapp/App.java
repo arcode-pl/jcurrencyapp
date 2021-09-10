@@ -14,7 +14,7 @@ public class App {
 		AppConfig config = new AppConfig();
 		AppController control = new AppController(config);
 		
-		Optional<BigDecimal> val = control.calculate("EUR", BigDecimal.valueOf(10.123), LocalDate.now());
+		Optional<BigDecimal> val = control.calculate("EUR", BigDecimal.valueOf(10.1234), LocalDate.now());
 		if(val.isPresent()) {
 			System.out.format("iter 1 value: %s%n", val.get().toPlainString());
 		} else {
