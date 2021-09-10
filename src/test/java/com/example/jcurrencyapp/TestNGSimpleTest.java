@@ -1,8 +1,6 @@
 package com.example.jcurrencyapp;
 
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
-
 import org.testng.Assert;
 
 public class TestNGSimpleTest {
