@@ -33,7 +33,7 @@ public class AppTest {
 	}
 
 	@Test
-	public void AppMainTest() throws WrongCurrencyCodeException {
+	public void DefaultProviderTest() throws WrongCurrencyCodeException {
 	    AppController control = new AppController();
 	   
 	    String code = CurrencyTypes.GBP;
@@ -50,7 +50,7 @@ public class AppTest {
    	}
 	
 	@Test
-	public void AddCustomProvider() throws WrongCurrencyCodeException, WrongProviderException {
+	public void CustomProviderTest() throws WrongCurrencyCodeException {
 	    System.out.println("AppMainTest");
 		
 	    AppController control = new AppController();
