@@ -35,7 +35,7 @@ public class AppController {
 		this.config = config;
 	}
 	
-	public void setCustomDataProvider(String name, ProviderInterface iface) throws WrongProviderException {
+	public void setCustomDataProvider(String name, ProviderInterface iface) {
 		factory.addCustomProvider(name, iface);
 		config.setProvider(name);
 	}
