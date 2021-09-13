@@ -1,10 +1,10 @@
-package com.example.jcurrencyapp.data.mode;
+package com.example.jcurrencyapp.data.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public class Currency {
-	BigDecimal rate;
+	BigDecimal value;
 	String code;
 	LocalDate date;
 	
@@ -14,21 +14,29 @@ public class Currency {
 	
 	public Currency(BigDecimal rate, String code, LocalDate date) {
 		super();
-		this.rate = rate;
+		this.value = rate;
+		this.code = code;
+		this.date = date;
+	}
+	
+	public Currency(double rate, String code, LocalDate date) {
+		super();
+		this.value = BigDecimal.valueOf(rate);
 		this.code = code;
 		this.date = date;
 	}
 
-	public static Currency testDataModel() {
+	//TODO: use only for development, remove it in the future
+	public static Currency fakeDataModel() {
 		return new Currency(new BigDecimal("3.84"), "USD", LocalDate.now());
 	}
 	
-	public BigDecimal getRate() {
-		return rate;
+	public BigDecimal getValue() {
+		return value;
 	}
 	
-	public void setRate(BigDecimal rate) {
-		this.rate = rate;
+	public void setValue(BigDecimal value) {
+		this.value = value;
 	}
 	
 	public String getCode() {
@@ -47,4 +55,10 @@ public class Currency {
 		this.date = date;
 	}
 
+	@Override
+	public String toString() {
+		return "Currency [value=" + value + ", code=" + code + ", date=" + date + "]";
+	}
+
+	
 }

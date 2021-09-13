@@ -4,8 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.mode.Currency;
-import com.example.jcurrencyapp.data.provider.ProviderInterface;
+import com.example.jcurrencyapp.data.model.Currency;
+import com.example.jcurrencyapp.data.model.CurrencyTypes;
 import com.example.jcurrencyapp.exceptions.WrongCurrencyCodeException;
 import com.example.jcurrencyapp.exceptions.WrongProtocolException;
 
@@ -18,26 +18,16 @@ public class App {
 	AppConfig config = new AppConfig();
 	AppController control = new AppController(config);
 	
+	//Example usage of API
 	public static void main(String[] args) throws WrongCurrencyCodeException, WrongProtocolException {
 
-		AppConfig config = new AppConfig();
-		AppController control = new AppController(config);
+		AppController control = new AppController();
 		
-		Optional<BigDecimal> val = control.calculate("EUR", BigDecimal.valueOf(10.1234), LocalDate.now());
-		if(val.isPresent()) {
-			System.out.format("iter 1 value: %s%n", val.get().toPlainString());
-		} else {
-			System.out.println("iter 1 not present");
-		}
+		Optional<Currency> val = control.calculate(CurrencyTypes.EUR, BigDecimal.valueOf(10.1234), LocalDate.now().minusDays(1));
+		val.ifPresentOrElse(p -> p.toString(), () -> System.out.println("empty"));
 		
-		
-		val = control.calculate("EUR", BigDecimal.valueOf(230.123), LocalDate.now());
-		if(val.isPresent()) {
-			System.out.format("iter 2 value: %s%n", val.get().toPlainString());
-		} else {
-			System.out.println("iter 2 not present");
-		}
-		
+		val = control.calculate(CurrencyTypes.GBP, BigDecimal.valueOf(230.123), LocalDate.now());
+		val.ifPresentOrElse(p -> p.toString(), () -> System.out.println("empty"));
 		
         return;
 	}

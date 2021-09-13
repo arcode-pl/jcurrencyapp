@@ -1,11 +1,12 @@
-package com.example.jcurrencyapp.data.mode;
+package com.example.jcurrencyapp.data.model;
 
 import java.util.Map;
 
 public class CurrencyCodes {
 	
-	//TODO: Add resoursec or language extension class for this map
-	private static final Map<String, String> CODES = Map.ofEntries(
+	//TODO: Add resources or language extension class for this map
+	//TODO: For each currency need to create other class in future
+	public static final Map<String, String> CODES = Map.ofEntries(
 			Map.entry("THB", "bat (Tajlandia)"),
 			Map.entry("USD", "dolar amerykañski"),
 			Map.entry("AUD", "dolar australijski"),
