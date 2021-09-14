@@ -12,24 +12,24 @@ public class WebApiController {
 
 	public static ApiResponse readApi(String url) throws ReadApiException {
 		ApiResponse apiResponse = new ApiResponse();
-		
+
 		try {
 			HttpClient client = HttpClient.newHttpClient();
 			HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET() // GET is default
-                .build();
+					.uri(URI.create(url)).GET() // GET is default
+					.build();
 
-			HttpResponse <String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-			
+			HttpResponse<String> response = client.send(
+					request, 
+					HttpResponse.BodyHandlers.ofString());
+
 			apiResponse.setCode(response.statusCode());
 			apiResponse.setText(response.body());
-			
+
 		} catch (Exception e) {
 			throw new ReadApiException("Cant get response for: " + url);
 		}
-		
-        return apiResponse;
+
+		return apiResponse;
 	}
 }

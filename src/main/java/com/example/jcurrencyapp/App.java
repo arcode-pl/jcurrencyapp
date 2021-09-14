@@ -15,25 +15,25 @@ import com.example.jcurrencyapp.exceptions.ProviderException;
 import com.example.jcurrencyapp.exceptions.ReadApiException;
 
 public class App {
-	
-	//Example usage of API
-	public static void main(String[] args) 
+
+	// Example usage of API
+	public static void main(String[] args)
 			throws ProviderException, ConverterException, InputsNotValidException, ReadApiException {
 
 		Optional<BigDecimal> result;
-		
+
 		AppController control = new AppController();
-		
-		//JSON
+
+		// JSON
 		control.setCustom(new NbpJsonProvider(), new NbpJsonConverter());
 		result = control.exchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
-		
-		//XML
-        control.setCustom(new NbpXmlProvider(), new NbpXmlConverter());
+
+		// XML
+		control.setCustom(new NbpXmlProvider(), new NbpXmlConverter());
 		result = control.exchange(CurrencyTypes.USD, new BigDecimal("2.0"), LocalDate.now());
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
-		
-        return;
+
+		return;
 	}
 }
