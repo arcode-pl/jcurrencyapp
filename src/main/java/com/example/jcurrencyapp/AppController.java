@@ -4,27 +4,26 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.model.Currency;
-import com.example.jcurrencyapp.data.model.CurrencyCodes;
-import com.example.jcurrencyapp.data.provider.ProviderFactory;
-import com.example.jcurrencyapp.data.provider.ProviderInterface;
-import com.example.jcurrencyapp.exceptions.WrongCurrencyCodeException;
-import com.example.jcurrencyapp.exceptions.WrongProtocolException;
-import com.example.jcurrencyapp.exceptions.WrongProviderException;
+import com.example.jcurrencyapp.data.converter.AppConverter;
+import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
+import com.example.jcurrencyapp.data.model.CurrencyTypes;
+import com.example.jcurrencyapp.data.provider.AppProvider;
+import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
+import com.example.jcurrencyapp.exceptions.ConverterException;
+import com.example.jcurrencyapp.exceptions.InputsNotValidException;
+import com.example.jcurrencyapp.exceptions.ProviderException;
+import com.example.jcurrencyapp.exceptions.ReadApiException;
 
 public class AppController {
 	
 	AppConfig config;
-	ProviderFactory factory;
+	AppProvider provider;
+	AppConverter converter;
 	
 	public AppController() {
 		this.config = new AppConfig();
-		this.factory = new ProviderFactory();
-	}
-	
-	public AppController(AppConfig config) {
-		this.config = config;
-		this.factory = new ProviderFactory();
+		this.provider = new NbpJsonProvider();
+		this.converter = new NbpJsonConverter();
 	}
 	
 	public AppConfig getConfig() {
@@ -35,54 +34,82 @@ public class AppController {
 		this.config = config;
 	}
 	
-	public void setCustomDataProvider(String name, ProviderInterface iface) {
-		factory.addCustomProvider(name, iface);
-		config.setProvider(name);
+	public AppProvider getProvider() {
+		return provider;
 	}
-	
-	private boolean inputsValid(String code, BigDecimal count, LocalDate date) throws WrongCurrencyCodeException {
-		return CurrencyCodes.exist(code) && count != null && date != null;
+
+	public void setProvider(AppProvider provider) {
+		this.provider = provider;
 	}
-	
-	//Ask for today exchange rates by default
-	public Optional<Currency> calculate(String code, BigDecimal count) throws WrongCurrencyCodeException
-	{
-		return this.calculate(code, count, LocalDate.now());
+
+	public AppConverter getConverter() {
+		return converter;
 	}
-	
-	public Optional<Currency> calculate(String code, BigDecimal count, LocalDate date) throws WrongCurrencyCodeException 
-	{
-		Optional<Currency> currency;
-		
-		// Check for null in input
-		if (!inputsValid(code, count, date)) {
-			return Optional.empty();
+
+	public void setConverter(AppConverter converter) {
+		this.converter = converter;
+	}
+
+	public void setCustom(AppProvider provider, AppConverter converter) {
+		this.setProvider(provider);
+		this.setConverter(converter);
+	}
+
+	private void validateInputs(CurrencyTypes code, BigDecimal count, LocalDate date) throws InputsNotValidException {
+		if (code == null || count == null || date == null) {
+			throw new InputsNotValidException("in function validateInputs");
 		}
 		
 		// Set date to today when ask for future
 		if (date.isAfter(LocalDate.now())) {
 			date = LocalDate.now();
 		}
+	}
+	
+	private Optional<String> getDataWithBackLoop(CurrencyTypes code, LocalDate date, int maxBackDays) throws ReadApiException {
+		int retryCnt = 0;
+		boolean valid = false;
+		Optional<String> data;
 		
-		// In this step we get currency model (rate, date, code) from provider.
-		ProviderInterface provider = factory.getProvider(config.getProvider());
-		if (provider != null) {
-			
-			// Try get previous day until maxBackDays
-			int retryCnt = 0;
-			while ((currency = provider.getRate(code, date)).isEmpty() && retryCnt < config.getMaxBackDays()) {
-				date = date.minusDays(1);
-				retryCnt++;
+		//Loop back if not tables
+		while (!valid && retryCnt < maxBackDays)
+		{
+			data = provider.getData(code.toString(), date);
+			if (data.isPresent()) {
+				return data;
 			}
 			
-			if (currency.isPresent()) {
-				//System.out.println(currency.toString());
-				count = count.multiply(currency.get().getValue());
-				currency.get().setValue(count);
-				return currency;
-			}
+			date = date.minusDays(1);
+			retryCnt++;
+		}
+				
+		return Optional.empty();
+	}
+	
+	private Optional<BigDecimal> calculate(BigDecimal count, BigDecimal rate) {
+		return Optional.of(count.multiply(rate));
+	}
+	
+	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal count, LocalDate date) 
+			throws ProviderException, ConverterException, InputsNotValidException, ReadApiException {
+		Optional<BigDecimal> rate = Optional.empty();
+		
+		// Validate inputs
+		validateInputs(code, count, date);
+		
+		// Get data
+		Optional<String> data = getDataWithBackLoop(code, date, config.getMaxBackDays());
+		
+		// Get rate
+		if (data.isPresent()) {
+			rate = converter.getRate(data.get());
 		}
 		
-		return Optional.empty();
+		// Calculate
+		if (rate.isPresent()) {
+			return calculate(count, rate.get());
+		}
+		
+		return rate;
 	}
 }

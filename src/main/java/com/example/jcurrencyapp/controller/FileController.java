@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.controller;
+package com.example.jcurrencyapp.controller;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

@@ -3,15 +3,24 @@ package com.example.jcurrencyapp.data.provider.impl;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.model.Currency;
-import com.example.jcurrencyapp.data.provider.ProviderInterface;
+import com.example.jcurrencyapp.controller.WebApiController;
+import com.example.jcurrencyapp.data.provider.AppProvider;
+import com.example.jcurrencyapp.exceptions.ReadApiException;
+import com.example.jcurrencyapp.service.ApiResponse;
+import com.example.jcurrencyapp.service.NbpWebApiRequest;
 
-public class NbpWebApiXml implements ProviderInterface {
+public class NbpXmlProvider implements AppProvider {
 
 	@Override
-	public Optional<Currency> getRate(String code, LocalDate date) {
-		// TODO Implement get currency from XML
-		return Optional.of(Currency.fakeDataModel());
+	public Optional<String> getData(String code, LocalDate date) throws ReadApiException {
+		NbpWebApiRequest request = new NbpWebApiRequest();
+		ApiResponse response = WebApiController.readApi(request.getSimpleQuery(code, date, true));
+		
+		if(response.getCode() == 200) {
+			return Optional.of(response.getText());
+		}
+		
+		return Optional.empty();
 	}
 
 }
