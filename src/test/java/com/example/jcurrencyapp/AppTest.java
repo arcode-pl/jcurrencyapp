@@ -1,13 +1,13 @@
 package com.example.jcurrencyapp;
 import org.testng.annotations.Test;
 
+import com.example.jcurrencyapp.model.CurrencyTypes;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
-
-import com.example.jcurrencyapp.data.model.CurrencyTypes;
 
 public class AppTest {
 	

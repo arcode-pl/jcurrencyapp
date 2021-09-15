@@ -7,6 +7,6 @@ import java.util.Optional;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 //Returns currency rate selected by code and value
-public interface AppConverter {
-	public Optional<BigDecimal> getRate(String data) throws ConverterException;
+public interface IConverter {
+	public BigDecimal getRate(String data);
 }

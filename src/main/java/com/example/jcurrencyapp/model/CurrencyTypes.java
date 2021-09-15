@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.model;
+package com.example.jcurrencyapp.model;
 
 public enum CurrencyTypes {
 	THB, USD, AUD, HKD, CAD, NZD, SGD, EUR,

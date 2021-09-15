@@ -1,9 +1,10 @@
 package com.example.jcurrencyapp;
 
-public class AppConfig {
+public class Config {
+	public static final int MAX_BACK_DAYS = 365;
 	private int maxBackDays;
 	
-	public AppConfig() {
+	public Config() {
 		this.setMaxBackDays(10);
 	}
 
@@ -12,7 +13,8 @@ public class AppConfig {
 	}
 
 	public void setMaxBackDays(int backDays) {
-		this.maxBackDays = backDays;
+		if (backDays >= 0 && backDays <= MAX_BACK_DAYS) {
+			this.maxBackDays = backDays;
+		}
 	}
-	
 }

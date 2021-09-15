@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.model.pojo.nbp;
+package com.example.jcurrencyapp.data.converter.model;
 
 import java.util.HashMap;
 import java.util.List;

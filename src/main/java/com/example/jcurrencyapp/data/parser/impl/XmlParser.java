@@ -5,12 +5,12 @@ import java.io.UncheckedIOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.parser.AppParser;
+import com.example.jcurrencyapp.data.parser.IParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-public class XmlParser<T> implements AppParser<T> {
+public class XmlParser<T> implements IParser<T> {
 
 	private static final ObjectMapper XML_MAPPER = new XmlMapper();
 	private final Class<T> type;

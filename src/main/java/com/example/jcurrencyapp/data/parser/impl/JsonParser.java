@@ -5,11 +5,11 @@ import java.io.UncheckedIOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.parser.AppParser;
+import com.example.jcurrencyapp.data.parser.IParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JsonParser<T> implements AppParser<T> {
+public class JsonParser<T> implements IParser<T> {
 
 	private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 	private final Class<T> type;
