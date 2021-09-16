@@ -7,9 +7,7 @@ import java.util.Optional;
 import com.example.jcurrencyapp.controller.Logic;
 import com.example.jcurrencyapp.controller.Validator;
 import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
 import com.example.jcurrencyapp.data.provider.IProvider;
-import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
 import com.example.jcurrencyapp.exceptions.ExceptionHandler;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
@@ -22,7 +20,7 @@ public class Controller {
 	public Controller() {
 		this.config = new Config();
 		this.validator = new Validator();
-		this.logic = new Logic(new NbpJsonProvider(), new NbpJsonConverter());
+		this.logic = new Logic();
 	}
 	
 	public Controller(IProvider provider, IConverter converter) {
@@ -61,16 +59,17 @@ public class Controller {
 	}
 
 	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal count, LocalDate date) {
-		if(validator.inputsValid(code, count, date)) {
-			date = validator.dateValid(date);
-
-			try {
-				String data = logic.getDataWithBackLoop(code, date, config.getMaxBackDays());
-				BigDecimal rate = logic.getRate(data);				
-				return Optional.of(count.multiply(rate));
-			} catch (Exception e) {
-				ExceptionHandler.handleException(e);
-			}
+		
+		try {
+			validator.validateInputs(code, count);
+			String data = logic.getDataWithBackLoop(
+					code, 
+					validator.fixDate(date), 
+					config.getMaxBackDays());
+			BigDecimal rate = logic.getRate(data);				
+			return Optional.of(count.multiply(rate));
+		} catch (Exception ex) {
+			ExceptionHandler.handleException(ex);
 		}
 		
 		return Optional.empty();

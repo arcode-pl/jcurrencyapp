@@ -3,21 +3,33 @@ package com.example.jcurrencyapp.controller;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.jcurrencyapp.exceptions.ValidatorException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class Validator {
 	
-	public boolean inputsValid(CurrencyTypes code, BigDecimal count, LocalDate date) {
-		if (code == null || count == null || date == null) {
-			return false;
+	public void validateInputs(CurrencyTypes code, BigDecimal count) {
+		if (!isCodeValid(code)) {
+			throw new ValidatorException("Code not valid");
 		}
 		
-		return true;
+		if (!isCountValid(count)) {
+			throw new ValidatorException("Count not valid");
+		}
 	}
 	
-	public LocalDate dateValid(LocalDate date) {
-		// Set date to today when ask for future
-		if (date.isAfter(LocalDate.now())) {
+	public boolean isCodeValid(CurrencyTypes code) {
+		return code instanceof CurrencyTypes;
+	}
+	
+	public boolean isCountValid(BigDecimal count) {
+		return count instanceof BigDecimal;
+	}
+	
+	public LocalDate fixDate(LocalDate date) {
+		
+		// Set date to today when ask for future or null
+		if ( (date == null) || date.isAfter(LocalDate.now())) {
 			date = LocalDate.now();
 		}
 		

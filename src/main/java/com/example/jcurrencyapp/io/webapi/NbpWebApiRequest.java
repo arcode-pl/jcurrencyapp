@@ -7,7 +7,7 @@ import com.example.jcurrencyapp.exceptions.ExceptionHandler;
 import com.example.jcurrencyapp.exceptions.WebApiException;
 
 public class NbpWebApiRequest {
-	private final String host = "http://api.nbp.pl/api/exchangerates/rates/c/";
+	private final String host = "https://api.nbp.pl/api/exchangerates/rates/c/";
 	
 	public String getSimpleQuery(String code, LocalDate date, boolean forceXml) {
 		String result = "";

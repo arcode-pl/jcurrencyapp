@@ -2,10 +2,11 @@ package com.example.jcurrencyapp.controller;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
 
 import com.example.jcurrencyapp.data.converter.IConverter;
+import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
 import com.example.jcurrencyapp.data.provider.IProvider;
+import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 /**
@@ -15,6 +16,11 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 public class Logic {
 	private IProvider provider;
 	private IConverter converter;
+	
+	public Logic() {
+		this.provider = new NbpJsonProvider();
+		this.converter = new NbpJsonConverter();
+	}
 	
 	public Logic(IProvider provider, IConverter converter) {
 		this.provider = provider;

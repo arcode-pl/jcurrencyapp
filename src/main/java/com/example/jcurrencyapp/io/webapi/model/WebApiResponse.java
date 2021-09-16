@@ -1,10 +1,10 @@
-package com.example.jcurrencyapp.io.webapi;
+package com.example.jcurrencyapp.io.webapi.model;
 
-public class ApiResponse {
+public class WebApiResponse {
 	int code = 0;
 	String text;
 	
-	public ApiResponse() {
+	public WebApiResponse() {
 		super();
 		this.code = 0;
 		this.text = "";
