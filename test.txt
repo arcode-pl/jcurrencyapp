@@ -1,0 +1,28 @@
+{
+	"table":"C",
+	"currency":"euro",
+	"code":"EUR",
+	"rates":
+	[{
+		"no":"178/C/NBP/2021",
+		"effectiveDate":
+		"2021-09-14",
+		"bid":4.5012,
+		"ask":4.5922
+	}]
+}
+
+<?xml version="1.0" encoding="utf-8"?>
+<ExchangeRatesSeries xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<Table>C</Table>
+	<Currency>dolar ameryka?ski</Currency>
+	<Code>USD</Code>
+	<Rates>
+		<Rate>
+			<No>178/C/NBP/2021</No>
+			<EffectiveDate>2021-09-14</EffectiveDate>
+			<Bid>3.8146</Bid>
+			<Ask>3.8916</Ask>
+		</Rate>
+	</Rates>
+</ExchangeRatesSeries>

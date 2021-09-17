@@ -1,5 +1,8 @@
 eclipse.preferences.version=1
-encoding//src/main/java=ISO-8859-1
-encoding//src/test/java=ISO-8859-1
-encoding/<project>=ISO-8859-1
+encoding//src/main/java=UTF-8
+encoding//src/test/java=UTF-8
+encoding//src/test/java/com/example/jcurrencyapp/controller/LogicTest.java=UTF-8
+encoding//src/test/java/com/example/jcurrencyapp/data/provider/impl/NbpJsonProviderTest.java=UTF-8
+encoding//src/test/java/com/example/jcurrencyapp/data/provider/impl/NbpXmlProviderTest.java=UTF-8
+encoding/<project>=UTF-8
 encoding/src=ISO-8859-1

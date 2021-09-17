@@ -4,32 +4,27 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.exceptions.WrongCurrencyCodeException;
-import com.example.jcurrencyapp.exceptions.WrongProtocolException;
+import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
+import com.example.jcurrencyapp.data.provider.impl.NbpXmlProvider;
+import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class App {
-	
-	public static void main(String[] args) throws WrongCurrencyCodeException, WrongProtocolException {
 
-		AppConfig config = new AppConfig();
-		AppController control = new AppController(config);
-		
-		Optional<BigDecimal> val = control.calculate("EUR", BigDecimal.valueOf(10.1234), LocalDate.now());
-		if(val.isPresent()) {
-			System.out.format("iter 1 value: %s%n", val.get().toPlainString());
-		} else {
-			System.out.println("iter 1 not present");
-		}
-		
-		
-		val = control.calculate("EUR", BigDecimal.valueOf(230.123), LocalDate.now());
-		if(val.isPresent()) {
-			System.out.format("iter 2 value: %s%n", val.get().toPlainString());
-		} else {
-			System.out.println("iter 2 not present");
-		}
-		
-		
-        return;
+	// Example usage of API
+	public static void main(String[] args) {
+
+		Optional<BigDecimal> result;
+
+		// JSON
+		Controller control = new Controller();
+		result = control.exchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
+		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
+
+		// XML, *setCustom - do not create new Controller every time, but replace provider and converter
+		control = new Controller(new NbpXmlProvider(), new NbpXmlConverter());
+		result = control.exchange(CurrencyTypes.USD, new BigDecimal("2.0"), LocalDate.now());
+		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
+
+		return;
 	}
 }
