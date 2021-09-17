@@ -1,12 +1,13 @@
 package com.example.jcurrencyapp.controller;
 
-import org.testng.annotations.Test;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.example.jcurrencyapp.exceptions.AppException;
+import org.testng.annotations.Test;
+
 import com.example.jcurrencyapp.exceptions.ValidatorException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
@@ -35,7 +36,6 @@ public class ValidatorTest {
 	@Test
 	public void fixDateTest_WhenDataIsNull_ReturnTodayAsDate() {
 		Validator validator = new Validator();
-		LocalDate date;
 		
 		assertThatThrownBy(() -> {
 			assertThat(validator.fixDate(null)).isEqualTo(LocalDate.now());
@@ -46,7 +46,6 @@ public class ValidatorTest {
 	@Test
 	public void fixDateTest_WhenDataIsFuture_ReturnTodayAsDate() {
 		Validator validator = new Validator();
-		LocalDate date;
 		
 		assertThatThrownBy(() -> {
 			assertThat(validator.fixDate(LocalDate.now().plusDays(10))).isEqualTo(LocalDate.now());

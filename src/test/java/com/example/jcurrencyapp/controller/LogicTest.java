@@ -13,10 +13,6 @@ import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
 import com.example.jcurrencyapp.data.provider.IProvider;
 import com.example.jcurrencyapp.data.provider.impl.NbpXmlProvider;
 import com.example.jcurrencyapp.exceptions.ConverterException;
-import com.example.jcurrencyapp.exceptions.ValidatorException;
-import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
-import com.example.jcurrencyapp.io.webapi.WebApiController;
-import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class LogicTest {

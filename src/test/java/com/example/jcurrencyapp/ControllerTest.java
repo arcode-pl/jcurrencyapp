@@ -2,7 +2,6 @@ package com.example.jcurrencyapp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -11,7 +10,6 @@ import java.util.Optional;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.AppException;
-import com.example.jcurrencyapp.exceptions.ValidatorException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class ControllerTest {
