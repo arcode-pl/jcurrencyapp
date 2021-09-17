@@ -4,18 +4,74 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import org.testng.annotations.Test;
 
+import com.example.jcurrencyapp.data.converter.IConverter;
 import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
+import com.example.jcurrencyapp.data.provider.IProvider;
 import com.example.jcurrencyapp.data.provider.impl.NbpXmlProvider;
 import com.example.jcurrencyapp.exceptions.ConverterException;
+import com.example.jcurrencyapp.exceptions.ValidatorException;
+import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
+import com.example.jcurrencyapp.io.webapi.WebApiController;
+import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
+import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class LogicTest {
 
-	@Test
-	public void getDataWithBackLoopTest_WhenDateIsSundayForExample_ShouldReturnDataFromLastFriday() {
+	public class TestProvider implements IProvider {
 
+		int callToReturnData = 30;
+		int callIdx = 0;
+
+		@Override
+		public String getData(String code, LocalDate date) {
+
+			if (callIdx >= callToReturnData) {
+				return "Get data with " + callIdx + " back days";
+			}
+			callIdx++;
+
+			return null;
+		}
+
+		public TestProvider(int callToReturnData) {
+			this.callToReturnData = callToReturnData;
+		}
+	}
+
+	public class TestConverter implements IConverter {
+
+		@Override
+		public BigDecimal getRate(String data) {
+			return new BigDecimal("1.0");
+		}
+	}
+	
+	@Test
+	public void getDataWithBackLoopTest_WhenContainsInMaxBackDays_ShouldReturnData() {
+
+		Logic logic = new Logic(new TestProvider(0), new TestConverter());
+		assertThat(logic.getDataWithBackLoop(CurrencyTypes.USD, LocalDate.now(), 0))
+				.contains("Get data with 0 back days");
+
+		logic = new Logic(new TestProvider(30), new TestConverter());
+		assertThat(logic.getDataWithBackLoop(CurrencyTypes.USD, LocalDate.now(), 30))
+				.contains("Get data with 30 back days");
+	}
+	
+	@Test
+	public void getDataWithBackLoopTest_WhenNotContainsInMaxBackDays_ShouldThrownProviderExceptionAndReturnNull() {
+
+		Logic logic = new Logic(new TestProvider(1), new TestConverter());
+		assertThat(logic.getDataWithBackLoop(CurrencyTypes.USD, LocalDate.now(), 0))
+				.isNull();
+
+		logic = new Logic(new TestProvider(31), new TestConverter());
+		assertThat(logic.getDataWithBackLoop(CurrencyTypes.USD, LocalDate.now(), 30))
+				.isNull();
 	}
 
 	@Test
