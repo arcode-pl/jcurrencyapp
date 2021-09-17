@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.AppException;
@@ -14,6 +15,11 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class ControllerTest {
 
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
+	}
+	
 	//Test end-end
 	@Test
 	public void exchangeTest_WhenCallExchangeWithValidParameters_ShouldReturnKnownValidValue() {

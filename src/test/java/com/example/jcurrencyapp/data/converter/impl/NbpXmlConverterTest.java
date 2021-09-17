@@ -5,12 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpXmlConverterTest {
 
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
+	}
+	
 	@Test
 	public void getRateTest_GivenSampleXmlStringFromNbp_WhenCall_ReturnAskPrice() {
 		String data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"

@@ -5,12 +5,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.math.BigDecimal;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpJsonConverterTest {
 
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
+	}
+	
 	@Test
 	public void getRateTest_GivenSampleJsonStringFromNbp_WhenCall_ReturnAskPrice() {
 		String data = "{\n"

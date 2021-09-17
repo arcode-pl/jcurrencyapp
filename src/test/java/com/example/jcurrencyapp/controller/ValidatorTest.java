@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.ValidatorException;
@@ -13,6 +14,11 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class ValidatorTest {
 
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
+	}
+	
 	@Test
 	public void validateInputsTest_WhenCodeNotValid_ShouldThrowValidatorException() {
 		Validator validator = new Validator();

@@ -1,4 +1,6 @@
 package com.example.jcurrencyapp.controller;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -6,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import org.testng.annotations.Test;
+
 
 import com.example.jcurrencyapp.data.converter.IConverter;
 import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
@@ -44,6 +46,11 @@ public class LogicTest {
 		public BigDecimal getRate(String data) {
 			return new BigDecimal("1.0");
 		}
+	}
+	
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
 	}
 	
 	@Test

@@ -3,15 +3,20 @@ package com.example.jcurrencyapp.io.webapi;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.AppException;
 
 public class NbpWebApiRequestTest {
 
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
+	}
+	
 	@Test
 	public void getSimpleQueryTest_GivenJsonFormat_WhenCall_ShouldReturnValidQuery() {
 		
