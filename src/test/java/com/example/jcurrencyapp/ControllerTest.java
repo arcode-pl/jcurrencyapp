@@ -13,6 +13,8 @@ import org.testng.annotations.Test;
 import com.example.jcurrencyapp.exceptions.AppException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
+//TODO: Update to given when then
+
 public class ControllerTest {
 
 	@BeforeClass

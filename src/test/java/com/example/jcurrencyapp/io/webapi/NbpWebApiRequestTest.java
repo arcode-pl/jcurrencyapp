@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.AppException;
 
+//TODO: Update to given when then
+
 public class NbpWebApiRequestTest {
 
 	@BeforeClass

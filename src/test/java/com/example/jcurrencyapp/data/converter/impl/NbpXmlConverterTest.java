@@ -10,6 +10,8 @@ import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
+//TODO: Update to given when then
+
 public class NbpXmlConverterTest {
 
 	@BeforeClass
