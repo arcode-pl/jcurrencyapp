@@ -68,7 +68,7 @@ public class Controller {
 					config.getMaxBackDays());
 			BigDecimal rate = logic.getRate(data);				
 			return Optional.of(count.multiply(rate));
-		} catch (Exception ex) {
+		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}
 		

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import com.example.jcurrencyapp.exceptions.AppException;
 import com.example.jcurrencyapp.exceptions.ValidatorException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
@@ -36,8 +37,10 @@ public class ValidatorTest {
 		Validator validator = new Validator();
 		LocalDate date;
 		
-		date = validator.fixDate(null);
-		assertThat(date).isEqualTo(LocalDate.now());
+		assertThatThrownBy(() -> {
+			assertThat(validator.fixDate(null)).isEqualTo(LocalDate.now());
+		}).isInstanceOf(ValidatorException.class)
+		  .hasMessageContaining("Date fixed to today");
 	}
 	
 	@Test
@@ -45,7 +48,9 @@ public class ValidatorTest {
 		Validator validator = new Validator();
 		LocalDate date;
 		
-		date = validator.fixDate(LocalDate.now().plusDays(10));
-		assertThat(date).isEqualTo(LocalDate.now());
+		assertThatThrownBy(() -> {
+			assertThat(validator.fixDate(LocalDate.now().plusDays(10))).isEqualTo(LocalDate.now());
+		}).isInstanceOf(ValidatorException.class)
+		  .hasMessageContaining("Date fixed to today");
 	}
 }

@@ -31,6 +31,7 @@ public class Validator {
 		// Set date to today when ask for future or null
 		if ( (date == null) || date.isAfter(LocalDate.now())) {
 			date = LocalDate.now();
+			throw new ValidatorException("Date fixed to today");
 		}
 		
 		return date;

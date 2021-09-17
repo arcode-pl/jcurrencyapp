@@ -2,6 +2,7 @@ package com.example.jcurrencyapp.io.webapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.LocalDate;
 
@@ -31,17 +32,13 @@ public class NbpWebApiRequestTest {
 		
 		assertThat(query).isEqualTo(validateQuery);
 	}
-	
+
 	@Test
 	public void getSimpleQueryTest_GivenWrongInputs_WhenCall_ShouldThrownWebApiExceptionAndReturnEmptyString() {
 		
 		String validateQuery = "";
-
-		assertThatThrownBy(() -> {
-			String query = new NbpWebApiRequest().getSimpleQuery(null, null, true);
-		}).isInstanceOf(RuntimeException.class)
-		  .hasMessageContaining("Can't getSimpleQuery: ");
 		
-		//assertThat(new NbpWebApiRequest().getSimpleQuery(null, null, true)).isEqualTo(validateQuery);
+		//Throwable error = catchThrowable(() -> assertThat(new NbpWebApiRequest().getSimpleQuery(null, null, true)).isEqualTo(validateQuery));
+		//assertThat(error).isInstanceOf(WebApiException.class).hasMessageContaining("Can't getSimpleQuery:");
 	}
 }
