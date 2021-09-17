@@ -1,10 +1,7 @@
-package com.example.jcurrencyapp.controller;
+package com.example.jcurrencyapp.ctrl;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
 import com.example.jcurrencyapp.data.provider.IProvider;
 import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
@@ -13,18 +10,15 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
  * @author emil.arkita
  *
  */
-public class Logic {
+public class ProviderCtrl {
 	private IProvider provider;
-	private IConverter converter;
 	
-	public Logic() {
+	public ProviderCtrl() {
 		this.provider = new NbpJsonProvider();
-		this.converter = new NbpJsonConverter();
 	}
 	
-	public Logic(IProvider provider, IConverter converter) {
+	public ProviderCtrl(IProvider provider) {
 		this.provider = provider;
-		this.converter = converter;
 	}
 	
 	public IProvider getProvider() {
@@ -35,15 +29,7 @@ public class Logic {
 		this.provider = provider;
 	}
 
-	public IConverter getConverter() {
-		return converter;
-	}
-
-	public void setConverter(IConverter converter) {
-		this.converter = converter;
-	}
-
-	public String getDataWithBackLoop(CurrencyTypes code, LocalDate date, int maxBackDays) {
+	public String getData(CurrencyTypes code, LocalDate date, int maxBackDays) {
 		int retryCnt = 0;
 		String data = null;
 
@@ -56,9 +42,4 @@ public class Logic {
 
 		return data;
 	}
-
-	public BigDecimal getRate(String data) {
-		return converter.getRate(data);		
-	}
-
 }

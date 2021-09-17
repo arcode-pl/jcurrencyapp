@@ -36,10 +36,7 @@ public class ControllerTest {
 	public void exchangeTest_WhenCallExchangeWithoutDateOrFutureDate_ShouldReturnUnknownValidValue() {
 		Controller controller = new Controller();
 		
-		assertThatThrownBy(() -> {
-			assertThat(controller.exchange(CurrencyTypes.USD, new BigDecimal("1.0"), null)).isNotEmpty();
-		}).isInstanceOf(AppException.class)
-		  .hasMessageContaining("Date fixed to today");
+		assertThat(controller.exchange(CurrencyTypes.USD, new BigDecimal("1.0"), null)).isNotEmpty();
 	}
 	
 	@Test

@@ -20,7 +20,7 @@ public class NbpXmlConverter implements IConverter {
 				return BigDecimal.valueOf(currency.get().getSimpleAskRate());
 			}
 		} catch (Exception e) {
-			throw new ConverterException("Can't get rate for input data: " + e.getMessage());
+			throw new ConverterException("Can't get rate for input data: " + e.getMessage(), e.getCause());
 		}
 		
 		return null;
