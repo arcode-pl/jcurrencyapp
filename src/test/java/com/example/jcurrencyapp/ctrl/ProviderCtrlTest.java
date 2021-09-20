@@ -47,33 +47,33 @@ public class ProviderCtrlTest {
 	}
 
 	@Test
-	public void shouldGetData_WhenDataIsAccessibleWithinMaxBackDays() {
+	public void shouldReturnCallsNumberToAccessData_WhenDataIsAccessiebleWithinMaxBackDays() {
 
-		// Given fake provider
+		// Given
 		ProviderCtrl provider;
 		
-		// When want data without looping back and data is accessible immediately
+		// When
 		int maxCallsToAccessData = 0;
 		int callsToAccessData = 0;
 		provider = new ProviderCtrl(new FakeProvider(callsToAccessData));
 		String result = provider.getData(CurrencyTypes.USD, LocalDate.now(), maxCallsToAccessData);
 		
-		// Then return valid data
+		// Then
 		assertThat(result).isEqualTo(String.valueOf(callsToAccessData));
 		
-		// When want data within up to 10 loops and data is accessible with 10 calls
+		// When
 		maxCallsToAccessData = 10;
 		callsToAccessData = 10;
 		provider = new ProviderCtrl(new FakeProvider(callsToAccessData));
 		result = provider.getData(CurrencyTypes.USD, LocalDate.now(), maxCallsToAccessData);
 		
-		// Then return valid data
+		// Then
 		assertThat(result).isEqualTo(String.valueOf(callsToAccessData));
 	}
 	
 
 	@Test
-	public void shouldNotGetData_WhenDataIsNotAccessibleWithinMaxBackDays() {
+	public void shouldReturnNull_WhenDataIsNotAccessiebleWithinMaxBackDays() {
 		// Given fake provider
 		ProviderCtrl provider;
 		

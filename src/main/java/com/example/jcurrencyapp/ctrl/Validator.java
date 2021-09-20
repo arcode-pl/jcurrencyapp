@@ -8,13 +8,13 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class Validator {
 	
-	public void validateInputs(CurrencyTypes code, BigDecimal count) {
+	public void validateInputs(CurrencyTypes code, BigDecimal quantity) {
 		if (!isCodeValid(code)) {
 			throw new ValidatorException("Code not valid");
 		}
 		
-		if (!isCountValid(count)) {
-			throw new ValidatorException("Count not valid");
+		if (!isCountValid(quantity)) {
+			throw new ValidatorException("Quantity not valid");
 		}
 	}
 	
@@ -22,8 +22,8 @@ public class Validator {
 		return code instanceof CurrencyTypes;
 	}
 	
-	public boolean isCountValid(BigDecimal count) {
-		return count instanceof BigDecimal;
+	public boolean isCountValid(BigDecimal quantity) {
+		return quantity instanceof BigDecimal;
 	}
 	
 	public LocalDate fixDate(LocalDate date) {

@@ -22,54 +22,54 @@ public class ValidatorTest {
 	}
 
 	@Test
-	public void shouldValidateInputs_WhenCodeNotValid_ThenThrowException() {
+	public void shouldThrowException_WhenCodeNotValid() {
 
-		// Given validator
+		// Given
 		Validator validator = new Validator();
 
-		// When validate inputs with invalid code
+		// When
 		Throwable throwable = catchThrowable(() -> validator.validateInputs(null, new BigDecimal("1.0")));
 
-		// Then should throw ValidatorException
+		// Then
 		assertThat(throwable).isInstanceOf(ValidatorException.class).hasMessageContaining("Code not valid");
 	}
 
 	@Test
-	public void shouldValidateInputs_WhenCountNotValid_ThenThrowException() {
+	public void shouldThrowException_WhenCountNotValid() {
 
-		// Given validator
+		// Given
 		Validator validator = new Validator();
 
-		// When validate inputs with invalid code
+		// When
 		Throwable throwable = catchThrowable(() -> validator.validateInputs(CurrencyTypes.USD, null));
 
-		// Then should throw ValidatorException
-		assertThat(throwable).isInstanceOf(ValidatorException.class).hasMessageContaining("Count not valid");
+		// Then
+		assertThat(throwable).isInstanceOf(ValidatorException.class).hasMessageContaining("Quantity not valid");
 	}
 
 	@Test
-	public void shouldfixDate_WhenInputDataIsNull_ThenThrowExceptionAndReturnTodayAsDate() {
-		// Given validator
+	public void shouldReturnToday_WhenInputDateIsNull() {
+		// Given
 		Validator validator = new Validator();
-		LocalDate date;
+		LocalDate date = null;
 
-		// When call fixDate with future
-		date = validator.fixDate(null);
+		// When
+		date = validator.fixDate(date);
 
-		// Then return today as date and thrown exception
+		// Then
 		assertThat(date).isEqualTo(LocalDate.now());
 	}
 
 	@Test
-	public void shouldfixDate_WhenInputDataIsFuture_ThenThrowExceptionAndReturnTodayAsDate() {
-		// Given validator
+	public void shouldReturnToday_WhenInputDateIsFuture() {
+		// Given
 		Validator validator = new Validator();
-		LocalDate date = null;
+		LocalDate date = LocalDate.now().plusDays(20);
 
-		// When call fixDate with future
-		date = validator.fixDate(LocalDate.now().plusDays(20));
+		// When
+		date = validator.fixDate(date);
 
-		// Then return today as date and thrown exception
+		// Then
 		assertThat(date).isEqualTo(LocalDate.now());
 	}
 }

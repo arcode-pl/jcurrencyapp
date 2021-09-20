@@ -41,37 +41,16 @@ public class Controller {
 		this.config = config;
 	}
 
-	public IProvider getProvider() {
-		return provider.getProvider();
-	}
-
-	public void setProvider(IProvider providerIface) {
-		provider.setProvider(providerIface);
-	}
-
-	public IConverter getConverter() {
-		return converter.getConverter();
-	}
-
-	public void setConverter(IConverter converterIface) {
-		this.converter.setConverter(converterIface);
-	}
-
-	public void setCustom(IProvider providerIface, IConverter converterIface) {
-		this.setProvider(providerIface);
-		this.setConverter(converterIface);
-	}
-
-	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal count, LocalDate date) {
+	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
 		
 		try {
-			validator.validateInputs(code, count);
+			validator.validateInputs(code, quantity);
 			String data = provider.getData(
 					code, 
 					validator.fixDate(date), 
 					config.getMaxBackDays());
 			BigDecimal rate = converter.getRate(data);				
-			return Optional.of(count.multiply(rate));
+			return Optional.of(quantity.multiply(rate));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}

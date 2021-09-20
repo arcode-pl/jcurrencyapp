@@ -31,29 +31,29 @@ public class ConverterCtrlTest {
 	}
 
 	@Test
-	public void shouldGetRate_WhenNotValidInputData_ReturnNull() {
+	public void shouldReturnNull_WhenNotValidInputData() {
 
-		// Given fake converter with fake value of "1.23456789";
+		// Given
 		BigDecimal fakeOutput = new BigDecimal("1.23456789");
 		ConverterCtrl controller = new ConverterCtrl(new FakeConverter(fakeOutput));
 
-		// When call with null string
+		// When
 		BigDecimal result = controller.getRate(null);
 
-		// Then should get null on output
+		// Then
 		assertThat(result).isNull();
 	}
 
-	public void shouldGetRate_WhenValidInputData_ReturnValidBigDecimalValue() {
+	public void shouldReturnRate_WhenValidInputData() {
 
-		// Given fake converter with fake value of "1.23456789";
+		// Given
 		BigDecimal fakeOutput = new BigDecimal("1.23456789");
 		ConverterCtrl controller = new ConverterCtrl(new FakeConverter(fakeOutput));
 
-		// When call controller.getRate with not null string
+		// When
 		BigDecimal result = controller.getRate("test data");
 
-		// Then should get same fake output
+		// Then
 		assertThat(result).isEqualTo(new BigDecimal("1.23456789"));
 	}
 }
