@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.controller;
+package com.example.jcurrencyapp.ctrl;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -8,13 +8,13 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class Validator {
 	
-	public void validateInputs(CurrencyTypes code, BigDecimal count) {
+	public void validateInputs(CurrencyTypes code, BigDecimal quantity) {
 		if (!isCodeValid(code)) {
 			throw new ValidatorException("Code not valid");
 		}
 		
-		if (!isCountValid(count)) {
-			throw new ValidatorException("Count not valid");
+		if (!isCountValid(quantity)) {
+			throw new ValidatorException("Quantity not valid");
 		}
 	}
 	
@@ -22,8 +22,8 @@ public class Validator {
 		return code instanceof CurrencyTypes;
 	}
 	
-	public boolean isCountValid(BigDecimal count) {
-		return count instanceof BigDecimal;
+	public boolean isCountValid(BigDecimal quantity) {
+		return quantity instanceof BigDecimal;
 	}
 	
 	public LocalDate fixDate(LocalDate date) {
@@ -31,7 +31,7 @@ public class Validator {
 		// Set date to today when ask for future or null
 		if ( (date == null) || date.isAfter(LocalDate.now())) {
 			date = LocalDate.now();
-			throw new ValidatorException("Date fixed to today");
+			//throw new ValidatorException("Date fixed to today");
 		}
 		
 		return date;

@@ -1,8 +1,9 @@
 package com.example.jcurrencyapp.exceptions;
 
+@SuppressWarnings("serial")
 public class ProviderException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-	public ProviderException(String msg) {
-		super("ProviderException: [" + msg + "]");
+	
+	public ProviderException(String msg, Throwable cause) {
+		super(msg, cause);
 	}
 }

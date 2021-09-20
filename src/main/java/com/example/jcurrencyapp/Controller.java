@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.controller.Logic;
-import com.example.jcurrencyapp.controller.Validator;
+import com.example.jcurrencyapp.ctrl.ConverterCtrl;
+import com.example.jcurrencyapp.ctrl.ProviderCtrl;
+import com.example.jcurrencyapp.ctrl.Validator;
 import com.example.jcurrencyapp.data.converter.IConverter;
 import com.example.jcurrencyapp.data.provider.IProvider;
 import com.example.jcurrencyapp.exceptions.ExceptionHandler;
@@ -15,18 +16,21 @@ public class Controller {
 
 	private Config config;
 	private Validator validator;
-	private Logic logic;
+	private ProviderCtrl provider;
+	private ConverterCtrl converter;
 	
 	public Controller() {
 		this.config = new Config();
 		this.validator = new Validator();
-		this.logic = new Logic();
+		this.provider = new ProviderCtrl();
+		this.converter = new ConverterCtrl();
 	}
 	
 	public Controller(IProvider provider, IConverter converter) {
 		this.config = new Config();
 		this.validator = new Validator();
-		this.logic = new Logic(provider, converter);
+		this.provider = new ProviderCtrl(provider);
+		this.converter = new ConverterCtrl(converter);
 	}
 
 	public Config getConfig() {
@@ -37,37 +41,16 @@ public class Controller {
 		this.config = config;
 	}
 
-	public IProvider getProvider() {
-		return logic.getProvider();
-	}
-
-	public void setProvider(IProvider provider) {
-		logic.setProvider(provider);
-	}
-
-	public IConverter getConverter() {
-		return logic.getConverter();
-	}
-
-	public void setConverter(IConverter converter) {
-		this.logic.setConverter(converter);
-	}
-
-	public void setCustom(IProvider provider, IConverter converter) {
-		this.setProvider(provider);
-		this.setConverter(converter);
-	}
-
-	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal count, LocalDate date) {
+	public Optional<BigDecimal> exchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
 		
 		try {
-			validator.validateInputs(code, count);
-			String data = logic.getDataWithBackLoop(
+			validator.validateInputs(code, quantity);
+			String data = provider.getData(
 					code, 
 					validator.fixDate(date), 
 					config.getMaxBackDays());
-			BigDecimal rate = logic.getRate(data);				
-			return Optional.of(count.multiply(rate));
+			BigDecimal rate = converter.getRate(data);				
+			return Optional.of(quantity.multiply(rate));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}

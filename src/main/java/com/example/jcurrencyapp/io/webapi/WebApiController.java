@@ -27,7 +27,7 @@ public class WebApiController {
 			apiResponse.setCode(response.statusCode());
 			apiResponse.setText(response.body());
 		} catch (Exception e) {
-			ExceptionHandler.handleException(new WebApiException("Can't read api: " + e.getMessage()));
+			ExceptionHandler.handleException(new WebApiException("Can't read api: " + e.getMessage(), e.getCause()));
 		}
 
 		return apiResponse;

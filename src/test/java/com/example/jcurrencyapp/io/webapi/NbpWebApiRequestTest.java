@@ -6,39 +6,55 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.LocalDate;
 
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.example.jcurrencyapp.exceptions.ConverterException;
-import com.example.jcurrencyapp.exceptions.WebApiException;
+import com.example.jcurrencyapp.exceptions.AppException;
 
 public class NbpWebApiRequestTest {
 
-	@Test
-	public void getSimpleQueryTest_GivenJsonFormat_WhenCall_ShouldReturnValidQuery() {
-		
-		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
-		
-		String query = new NbpWebApiRequest().getSimpleQuery("USD", LocalDate.of(2016, 4, 12), false);
-		
-		assertThat(query).isEqualTo(validateQuery);
+	@BeforeClass
+	public void init() {
+		System.out.println("Testing: " + this.getClass().getName());
 	}
-	
+
 	@Test
-	public void getSimpleQueryTest_GivenXmlFormat_WhenCall_ShouldReturnValidQuery() {
-		
-		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=xml";
-		
-		String query = new NbpWebApiRequest().getSimpleQuery("USD", LocalDate.of(2016, 4, 12), true);
-		
+	public void shouldReturnValidQuery_WhenGivenJsonFormat() {
+		// Given
+		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
+		NbpWebApiRequest request = new NbpWebApiRequest();
+
+		// When
+		String query = request.getSimpleQuery("USD", LocalDate.of(2016, 4, 12), false);
+
+		// Then
 		assertThat(query).isEqualTo(validateQuery);
 	}
 
 	@Test
-	public void getSimpleQueryTest_GivenWrongInputs_WhenCall_ShouldThrownWebApiExceptionAndReturnEmptyString() {
+	public void getSimpleQueryTest_GivenXmlFormat_WhenCall_ShouldReturnValidQuery() {
+		// Given
+		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=xml";
+		NbpWebApiRequest request = new NbpWebApiRequest();
+
+		// When
+		String query = request.getSimpleQuery("USD", LocalDate.of(2016, 4, 12), true);
+
+		// Then
+		assertThat(query).isEqualTo(validateQuery);
+	}
+
+	@Test
+	public void shouldThrownWebApiException_WhenGivenWrongInputs() {
+		// Given
+		NbpWebApiRequest request = new NbpWebApiRequest();
+		String code = null;
+		LocalDate date = null;
 		
-		String validateQuery = "";
+		// When 
+		Throwable throwable = catchThrowable(() -> request.getSimpleQuery(code, date, false));
 		
-		//Throwable error = catchThrowable(() -> assertThat(new NbpWebApiRequest().getSimpleQuery(null, null, true)).isEqualTo(validateQuery));
-		//assertThat(error).isInstanceOf(WebApiException.class).hasMessageContaining("Can't getSimpleQuery:");
+		// Then
+		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Can't getSimpleQuery:");
 	}
 }

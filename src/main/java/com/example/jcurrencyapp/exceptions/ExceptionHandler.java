@@ -7,16 +7,16 @@ public class ExceptionHandler {
 			throw ex;
 		} catch (ValidatorException e) {
 			System.out.println(e.getMessage());
-			throw new AppException(e.getMessage());
+			throw new AppException(e.getMessage(), e);
 		}  catch (ProviderException e) {
 			System.out.println(e.getMessage());
-			throw new AppException(e.getMessage());
+			throw new AppException(e.getMessage(), e);
 		} catch (ConverterException e) {
 			System.out.println(e.getMessage());
-			throw new AppException(e.getMessage());
+			throw new AppException(e.getMessage(), e);
 		} catch (WebApiException e) {
 			System.out.println(e.getMessage());
-			throw new AppException(e.getMessage());
+			throw new AppException(e.getMessage(), e);
 		} catch (RuntimeException e) {
 			throw e;
 		}
