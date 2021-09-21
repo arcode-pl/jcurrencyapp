@@ -36,7 +36,7 @@ public class JCurrencyTest {
 		Optional<Rate> result = controller.exchange(currency, quantity, date);
 
 		// Then
-		assertThat(result.get()).isEqualTo(quantity.multiply(usdAskPriceForDay20160412));
+		assertThat(result.get().getRate()).isEqualTo(quantity.multiply(usdAskPriceForDay20160412));
 	}
 
 	@Test
