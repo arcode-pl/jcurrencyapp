@@ -19,11 +19,10 @@ public class WebApiControllerTest {
 	@Test
 	public void shoulReturnStatusCode200_WhenCallWebApi() {
 		// Given
-		WebApiController webApi = new WebApiController();
 		String apiUrl = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
 		
 		// When
-		WebApiResponse response = webApi.readApi(apiUrl);
+		WebApiResponse response = WebApiController.readApi(apiUrl);
 
 		// Then
 		assertThat(response.getCode()).isEqualTo(200);

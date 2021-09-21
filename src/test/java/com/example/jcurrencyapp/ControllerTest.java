@@ -1,95 +1,128 @@
 package com.example.jcurrencyapp;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Optional;
+import java.util.Arrays;
 
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.example.jcurrencyapp.exceptions.AppException;
+import com.example.jcurrencyapp.data.converter.IConverter;
+import com.example.jcurrencyapp.data.provider.IProvider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
-
-//TODO: Update to given when then
+import com.example.jcurrencyapp.model.Rate;
 
 public class ControllerTest {
+
+	public class FakeConverter implements IConverter {
+
+		BigDecimal value;
+
+		public FakeConverter(BigDecimal value) {
+			this.value = value;
+		}
+
+		@Override
+		public BigDecimal getRate(String data) {
+			return data != null ? value : null;
+		}
+	}
+
+	public class FakeProvider implements IProvider {
+
+		int callToReturnData = 10;
+		int callIdx = 0;
+
+		@Override
+		public String getData(CurrencyTypes code, LocalDate date) {
+
+			if (callIdx >= callToReturnData) {
+				return String.valueOf(callIdx);
+			}
+			callIdx++;
+
+			return null;
+		}
+
+		public FakeProvider(int callToReturnData) {
+			this.callToReturnData = callToReturnData;
+		}
+
+		@Override
+		public IConverter getConverter() {
+			return new FakeConverter(new BigDecimal("1.23456789"));
+		}
+	}
 
 	@BeforeClass
 	public void init() {
 		System.out.println("Testing: " + this.getClass().getName());
 	}
 
-	// Test end-end
 	@Test
-	public void shouldReturnValidExchangeRate_WhenGivenValidInputs() {
+	public void shouldReturnCallsNumberToAccessData_WhenDataIsAccessiebleWithinMaxBackDays() {
 
 		// Given
-		Controller controller = new Controller();
-		CurrencyTypes currency = CurrencyTypes.USD;
-		BigDecimal quantity = new BigDecimal("33.4567");
-		LocalDate date = LocalDate.of(2016, 04, 12);
-		BigDecimal usdAskPriceForDay20160412 = new BigDecimal("3.7695");
+		Controller ctrl;
 
 		// When
-		Optional<BigDecimal> result = controller.exchange(currency, quantity, date);
+		int maxCallsToAccessData = 0;
+		int callsToAccessData = 0;
+
+		ctrl = new Controller(
+				Arrays.asList(
+						new FakeProvider(callsToAccessData + 1), // after first call from first provider
+						new FakeProvider(callsToAccessData + 0))); // immediately from second provider
+
+		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
 
 		// Then
-		assertThat(result.get()).isEqualTo(quantity.multiply(usdAskPriceForDay20160412));
+		assertThat(result.getDate()).isEqualTo(LocalDate.now());
+
+		// When
+		maxCallsToAccessData = 10;
+		callsToAccessData = 10;
+		ctrl = new Controller(Arrays.asList(
+				new FakeProvider(callsToAccessData*2), 
+				new FakeProvider(callsToAccessData)));
+		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);
+		
+		result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+
+		// Then
+		assertThat(result.getDate()).isEqualTo(LocalDate.now().minusDays(callsToAccessData));
 	}
 
 	@Test
-	public void shouldReturnTodayExchangeRate_WhenDateIsNullOrFuture() {
-		// Given
-		Controller controller = new Controller();
-		CurrencyTypes currency = CurrencyTypes.USD;
-		BigDecimal quantity = new BigDecimal("33.4567");
+	public void shouldReturnNull_WhenDataIsNotAccessiebleWithinMaxBackDays() {
+		// Given fake provider
+		Controller ctrl;
 
 		// When
-		LocalDate date = null;
-		Optional<BigDecimal> response = controller.exchange(currency, quantity, date);
+		int maxCallsToAccessData = 0;
+		int callsToAccessData = 1;
+		ctrl = new Controller(Arrays.asList(
+				new FakeProvider(callsToAccessData + 1), 
+				new FakeProvider(callsToAccessData + 0)));
+		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);;
 
+		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+		
 		// Then
-		assertThat(response).isNotNull();
+		assertThat(result).isNull();
 
 		// When
-		date = LocalDate.now().plusDays(30);
-		response = controller.exchange(currency, quantity, date);
+		maxCallsToAccessData = 10;
+		callsToAccessData = 11;
+		ctrl = new Controller(Arrays.asList(
+				new FakeProvider(callsToAccessData + 1), 
+				new FakeProvider(callsToAccessData + 0)));
+		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);;
+		result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
 
 		// Then
-		assertThat(response).isNotNull();
-	}
-
-	@Test
-	public void shouldThrownException_WhenCurrencyIsNull() {
-		// Given
-		Controller controller = new Controller();
-		CurrencyTypes currency = null;
-		BigDecimal quantity = new BigDecimal("33.4567");
-		LocalDate date = LocalDate.of(2016, 04, 12);
-
-		// When
-		Throwable throwable = catchThrowable(() -> controller.exchange(currency, quantity, date));
-
-		// Then
-		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Code not valid");
-	}
-
-	@Test
-	public void shouldThrownException_WhenQuantityIsNull() {
-		// Given
-		Controller controller = new Controller();
-		CurrencyTypes currency = CurrencyTypes.USD;
-		BigDecimal quantity = null;
-		LocalDate date = LocalDate.of(2016, 04, 12);
-
-		// When
-		Throwable throwable = catchThrowable(() -> controller.exchange(currency, quantity, date));
-
-		// Then
-		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Quantity not valid");
+		assertThat(result).isNull();
 	}
 }
