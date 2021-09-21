@@ -8,6 +8,7 @@ import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
 import com.example.jcurrencyapp.io.webapi.WebApiController;
 import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
 import com.example.jcurrencyapp.model.CurrencyTypes;
+import com.example.jcurrencyapp.model.Rate;
 
 public class NbpXmlProvider implements IProvider {
 
@@ -33,6 +34,12 @@ public class NbpXmlProvider implements IProvider {
 	@Override
 	public IConverter getConverter() {
 		return this.converter;
+	}
+
+	@Override
+	public void setData(Rate rate) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

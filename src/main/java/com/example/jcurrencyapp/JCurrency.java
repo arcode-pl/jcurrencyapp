@@ -40,8 +40,7 @@ public class JCurrency {
 		try {
 			validator.validateInputs(code, quantity);
 			Rate rate = ctrl.getRate(code, validator.fixDate(date));
-			rate.setRate(quantity.multiply(rate.getRate()));
-			return Optional.of(rate);
+			return Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}

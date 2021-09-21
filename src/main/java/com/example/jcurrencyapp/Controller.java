@@ -21,20 +21,17 @@ import com.example.jcurrencyapp.model.Rate;
 public class Controller {
 	private List<IProvider> providers;
 	private Config config;
-	private Cache cache;
 	
 	public Controller() {
 		this.providers = Arrays.asList(
 				new NbpJsonProvider(new NbpJsonConverter()),
 				new NbpXmlProvider(new NbpXmlConverter()));
 		this.config = new Config();
-		this.cache = new Cache();
 	}
 
 	public Controller(List<IProvider> providers) {
 		this.providers = providers;
 		this.config = new Config();
-		this.cache = new Cache();
 	}
 
 	public Config getConfig() {
@@ -43,12 +40,6 @@ public class Controller {
 
 	public void setConfig(Config config) {
 		this.config = config;
-	}
-	
-	public Controller clearCache() {
-		this.cache.clear();
-		
-		return this;
 	}
 	
 	public Rate getRate(CurrencyTypes code, LocalDate date) {
@@ -60,14 +51,6 @@ public class Controller {
 		// Loop through days
 		while (retryCnt <= config.getMaxBackDays()) {
 
-			// Firstly try return cache value if used and not forced read
-			if (config.isUseCache() && !config.isForceRead()) {
-				rate = cache.getRate(code, date);
-				if (rate != null) { // Return from cache if valid
-					return new Rate(rate, date);
-				}
-			}
-			
 			// Loop through providers to get rate from wanted day
 			for (IProvider provider : providers) {
 				raw = provider.getData(code, date);
@@ -75,12 +58,7 @@ public class Controller {
 				
 				rate = converter.getRate(raw);
 				if (rate != null) {
-					// Update cache if is used
-					if (config.isUseCache()) {
-						cache.putRate(code, date, rate);
-					}
-					
-					return new Rate(rate, date);
+					return new Rate(code, date, rate);
 				}
 			}
 			

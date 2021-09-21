@@ -54,6 +54,12 @@ public class ControllerTest {
 		public IConverter getConverter() {
 			return new FakeConverter(new BigDecimal("1.23456789"));
 		}
+
+		@Override
+		public void setData(Rate rate) {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 
 	@BeforeClass
