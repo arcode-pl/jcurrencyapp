@@ -1,7 +1,6 @@
 package com.example.jcurrencyapp.data.converter.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.math.BigDecimal;

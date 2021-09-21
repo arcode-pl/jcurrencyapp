@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.ctrl;
+package com.example.jcurrencyapp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

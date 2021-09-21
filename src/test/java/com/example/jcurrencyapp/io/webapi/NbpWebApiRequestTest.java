@@ -1,7 +1,6 @@
 package com.example.jcurrencyapp.io.webapi;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.time.LocalDate;
@@ -10,6 +9,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.exceptions.AppException;
+import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpWebApiRequestTest {
 
@@ -25,7 +25,7 @@ public class NbpWebApiRequestTest {
 		NbpWebApiRequest request = new NbpWebApiRequest();
 
 		// When
-		String query = request.getSimpleQuery("USD", LocalDate.of(2016, 4, 12), false);
+		String query = request.getSimpleQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12), false);
 
 		// Then
 		assertThat(query).isEqualTo(validateQuery);
@@ -38,7 +38,7 @@ public class NbpWebApiRequestTest {
 		NbpWebApiRequest request = new NbpWebApiRequest();
 
 		// When
-		String query = request.getSimpleQuery("USD", LocalDate.of(2016, 4, 12), true);
+		String query = request.getSimpleQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12), true);
 
 		// Then
 		assertThat(query).isEqualTo(validateQuery);
@@ -48,7 +48,7 @@ public class NbpWebApiRequestTest {
 	public void shouldThrownWebApiException_WhenGivenWrongInputs() {
 		// Given
 		NbpWebApiRequest request = new NbpWebApiRequest();
-		String code = null;
+		CurrencyTypes code = CurrencyTypes.USD;
 		LocalDate date = null;
 		
 		// When 
