@@ -19,11 +19,9 @@ import com.example.jcurrencyapp.model.Rate;
 public class Controller {
 	private List<Provider> providers;
 	private Config config;
-	
+
 	public Controller() {
-		this.providers = Arrays.asList(
-				new NbpProviderImpl(new NbpJsonConverterImpl()),
-				new NbpProviderImpl(new NbpXmlConverterImpl()));
+		this.providers = Arrays.asList(new NbpProviderImpl(new NbpJsonConverterImpl()));
 		this.config = new Config();
 	}
 
@@ -39,27 +37,26 @@ public class Controller {
 	public void setConfig(Config config) {
 		this.config = config;
 	}
-	
+
 	public Rate getRate(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
 		int retryCnt = 0;
-		
-		// Loop through days
+
 		while (retryCnt <= config.getMaxBackDays()) {
 
-			// Loop through providers to get rate from wanted day
 			for (Provider provider : providers) {
 				rate = provider.getRate(code, date);
 				if (rate != null) {
-					return new Rate(code, date, rate);
+					Rate result = new Rate(code, date, rate);
+					provider.saveRate(result);
+					return result;
 				}
 			}
-			
-			// Try get rate from previous day until max back days reached
+
 			date = date.minusDays(1);
 			retryCnt++;
 		}
-		
-		return null; //Can't get rate
+
+		return null;
 	}
 }
