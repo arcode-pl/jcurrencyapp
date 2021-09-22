@@ -96,11 +96,10 @@ public class JCurrencyTest {
 	@Test
 	public void sampleTest() {
 		JCurrency app = mock(JCurrency.class);
-		Optional<Rate> testResult = Optional.of(new Rate(CurrencyTypes.USD, LocalDate.now(), new BigDecimal("1.23456789")));
 		
 		when(app.tryExchange(null, null, null))
-				.thenReturn(testResult);
+				.thenReturn(Optional.empty());
 		
-		assertThat(app.tryExchange(null,null,null)).isEqualTo(testResult);
+		assertThat(app.tryExchange(null,null,null)).isEmpty();
 	}
 }
