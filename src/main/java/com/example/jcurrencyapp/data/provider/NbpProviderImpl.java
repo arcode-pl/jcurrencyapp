@@ -13,7 +13,7 @@ import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
-public class NbpProviderImpl extends CacheProviderImpl implements Provider { // is implements need here?
+public class NbpProviderImpl implements Provider { // is implements need here?
 
 	Converter converter;
 
@@ -36,6 +36,12 @@ public class NbpProviderImpl extends CacheProviderImpl implements Provider { // 
 		}
 
 		return null;
+	}
+
+	@Override
+	public void saveRate(Rate rate) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

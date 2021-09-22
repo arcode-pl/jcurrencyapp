@@ -4,9 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
-import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.data.provider.NbpProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
@@ -40,23 +40,29 @@ public class Controller {
 
 	public Rate getRate(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
-		int retryCnt = 0;
+		int backDaysCounter = 0;
 
-		while (retryCnt <= config.getMaxBackDays()) {
+		while (backDaysCounter <= config.getMaxBackDays()) {
 
 			for (Provider provider : providers) {
 				rate = provider.getRate(code, date);
 				if (rate != null) {
 					Rate result = new Rate(code, date, rate);
-					provider.saveRate(result);
+					
+					int currentProviderIdx = providers.indexOf(provider);
+					for (int i = 0 ; i < currentProviderIdx; i++) {
+						providers.get(i).saveRate(result);				
+					}
+
 					return result;
 				}
 			}
 
 			date = date.minusDays(1);
-			retryCnt++;
+			backDaysCounter++;
 		}
 
 		return null;
 	}
+
 }

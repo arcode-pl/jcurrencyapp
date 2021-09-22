@@ -13,24 +13,24 @@ import com.example.jcurrencyapp.model.Rate;
 public class JCurrency {
 
 	private Validator validator;
-	private Controller ctrl;
+	private Controller controller;
 
 	public JCurrency() {
 		this.validator = new Validator();
-		this.ctrl = new Controller();
+		this.controller = new Controller();
 	}
 
 	public JCurrency(List<Provider> providers) {
 		this.validator = new Validator();
-		this.ctrl = new Controller(providers);
+		this.controller = new Controller(providers);
 	}
 
 	public Config getConfig() {
-		return this.ctrl.getConfig();
+		return this.controller.getConfig();
 	}
 
 	public void setConfig(Config config) {
-		this.ctrl.setConfig(config);
+		this.controller.setConfig(config);
 	}
 
 	public Optional<Rate> tryExchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
@@ -38,7 +38,7 @@ public class JCurrency {
 		
 		try {
 			validator.validateInputs(code, quantity);
-			Rate rate = ctrl.getRate(code, validator.fixDate(date));
+			Rate rate = controller.getRate(code, validator.fixDate(date));
 			result = Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);

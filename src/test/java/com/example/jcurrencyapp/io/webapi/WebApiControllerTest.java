@@ -25,6 +25,6 @@ public class WebApiControllerTest {
 		WebApiResponse response = WebApiController.readApi(apiUrl);
 
 		// Then
-		assertThat(response.getCode()).isEqualTo(200);
+		assertThat(response.getCode()).isEqualTo(200);		
 	}
 }
