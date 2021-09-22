@@ -2,6 +2,8 @@ package com.example.jcurrencyapp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -89,5 +91,16 @@ public class JCurrencyTest {
 
 		// Then
 		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Quantity not valid");
+	}
+	
+	@Test
+	public void sampleTest() {
+		JCurrency app = mock(JCurrency.class);
+		Optional<Rate> testResult = Optional.of(new Rate(CurrencyTypes.USD, LocalDate.now(), new BigDecimal("1.23456789")));
+		
+		when(app.tryExchange(null, null, null))
+				.thenReturn(testResult);
+		
+		assertThat(app.tryExchange(null,null,null)).isEqualTo(testResult);
 	}
 }

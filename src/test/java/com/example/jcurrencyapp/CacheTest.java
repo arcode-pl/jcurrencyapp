@@ -1,13 +1,13 @@
 package com.example.jcurrencyapp;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.model.CurrencyTypes;
+
 
 public class CacheTest {
 
