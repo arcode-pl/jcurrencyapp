@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpXmlConverterTest {
@@ -20,7 +21,7 @@ public class NbpXmlConverterTest {
 	@Test
 	public void shouldReturnAskPrice_WhenGivenSampleXmlStringFromNbp() {
 		// Given
-		NbpXmlConverter converter = new NbpXmlConverter();
+		NbpXmlConverterImpl converter = new NbpXmlConverterImpl();
 		String data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 				+ "<ExchangeRatesSeries xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				+ "	<Table>C</Table>\n" + "	<Currency>dolar ameryka?ski</Currency>\n" + "	<Code>USD</Code>\n"
@@ -38,7 +39,7 @@ public class NbpXmlConverterTest {
 	@Test
 	public void shouldThrownException_WhenGivenBrokenXmlStringFromNbp() {
 		// Given
-		NbpXmlConverter converter = new NbpXmlConverter();
+		NbpXmlConverterImpl converter = new NbpXmlConverterImpl();
 		String data = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
 				+ "<ExchangeRatesSeries xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">\n"
 				+ "	<Table>C</Table>\n" + "	<Code>USD</Code>\n" + "		<Rate>\n"

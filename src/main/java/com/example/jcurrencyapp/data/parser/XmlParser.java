@@ -1,32 +1,32 @@
-package com.example.jcurrencyapp.data.parser.impl;
+package com.example.jcurrencyapp.data.parser;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.text.SimpleDateFormat;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.parser.IParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-public class JsonParser<T> implements IParser<T> {
+public class XmlParser<T> implements Parser<T> {
 
-	private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
+	private static final ObjectMapper XML_MAPPER = new XmlMapper();
 	private final Class<T> type;
 	
-	public JsonParser(Class<T> type){
+	public XmlParser(Class<T> type){
 	    this.type = type;
 	}
 	
 	static { 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY/MM/dd"); 
-		JSON_MAPPER.setDateFormat(simpleDateFormat); 
+		XML_MAPPER.setDateFormat(simpleDateFormat); 
 	}
 
 	@Override
 	public Optional<String> serialize(T data) {
 		try { 
-			return Optional.of(JSON_MAPPER.writeValueAsString(data)); 
+			return Optional.of(XML_MAPPER.writeValueAsString(data)); 
 		} catch (IOException e) { 
 			throw new UncheckedIOException("Oh no!", e); 
 		}
@@ -35,7 +35,7 @@ public class JsonParser<T> implements IParser<T> {
 	@Override
 	public Optional<T> deserialize(String data) {
 		try { 
-			return Optional.of(JSON_MAPPER.readValue(data, type)); 
+			return Optional.of(XML_MAPPER.readValue(data, type)); 
 		} catch (JsonProcessingException e) { 
 			throw new UncheckedIOException("Bad!", e); 
 		}

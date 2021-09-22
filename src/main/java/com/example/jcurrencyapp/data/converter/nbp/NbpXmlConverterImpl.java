@@ -1,14 +1,14 @@
-package com.example.jcurrencyapp.data.converter.impl;
+package com.example.jcurrencyapp.data.converter.nbp;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.converter.model.NbpCurrency;
-import com.example.jcurrencyapp.data.parser.impl.XmlParser;
+import com.example.jcurrencyapp.data.converter.Converter;
+import com.example.jcurrencyapp.data.converter.nbp.model.NbpCurrency;
+import com.example.jcurrencyapp.data.parser.XmlParser;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
-public class NbpXmlConverter implements IConverter {
+public class NbpXmlConverterImpl implements Converter {
 
 	@Override
 	public BigDecimal getRate(String data) {

@@ -9,13 +9,29 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpWebApiRequest {
 	private final String host = "https://api.nbp.pl/api/exchangerates/rates/c/";
+	
+	CurrencyTypes code;
+	LocalDate date;
+	
+	public NbpWebApiRequest(CurrencyTypes code, LocalDate date) {
+		this.code = code;
+		this.date = date;
+	}
 
-	public String getSimpleQuery(CurrencyTypes code, LocalDate date, boolean forceXml) {
+	public String getJsonQuery() {
+		return this.getQuery() + "json";
+	}
+	
+	public String getXmlQuery() {
+		return this.getQuery() + "xml";
+	}
+	
+	private String getQuery() {
 		String result = "";
 
 		try {
 			return host + code.toString().toLowerCase() + "/" + date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-					+ "/?format=" + (forceXml ? "xml" : "json");
+					+ "/?format=";
 		} catch (Exception e) {
 			ExceptionHandler
 					.handleException(new WebApiException("Can't getSimpleQuery: " + e.getMessage(), e.getCause()));

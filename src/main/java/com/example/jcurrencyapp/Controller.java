@@ -5,12 +5,10 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
-import com.example.jcurrencyapp.data.provider.IProvider;
-import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
-import com.example.jcurrencyapp.data.provider.impl.NbpXmlProvider;
+import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
+import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
+import com.example.jcurrencyapp.data.provider.NbpProviderImpl;
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -19,17 +17,17 @@ import com.example.jcurrencyapp.model.Rate;
  *
  */
 public class Controller {
-	private List<IProvider> providers;
+	private List<Provider> providers;
 	private Config config;
 	
 	public Controller() {
 		this.providers = Arrays.asList(
-				new NbpJsonProvider(new NbpJsonConverter()),
-				new NbpXmlProvider(new NbpXmlConverter()));
+				new NbpProviderImpl(new NbpJsonConverterImpl()),
+				new NbpProviderImpl(new NbpXmlConverterImpl()));
 		this.config = new Config();
 	}
 
-	public Controller(List<IProvider> providers) {
+	public Controller(List<Provider> providers) {
 		this.providers = providers;
 		this.config = new Config();
 	}
@@ -45,18 +43,13 @@ public class Controller {
 	public Rate getRate(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
 		int retryCnt = 0;
-		String raw;
-		IConverter converter;
 		
 		// Loop through days
 		while (retryCnt <= config.getMaxBackDays()) {
 
 			// Loop through providers to get rate from wanted day
-			for (IProvider provider : providers) {
-				raw = provider.getData(code, date);
-				converter = provider.getConverter();
-				
-				rate = converter.getRate(raw);
+			for (Provider provider : providers) {
+				rate = provider.getRate(code, date);
 				if (rate != null) {
 					return new Rate(code, date, rate);
 				}

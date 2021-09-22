@@ -9,14 +9,14 @@ import java.util.Arrays;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.provider.IProvider;
+import com.example.jcurrencyapp.data.converter.Converter;
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
 public class ControllerTest {
 
-	public class FakeConverter implements IConverter {
+	public class FakeConverter implements Converter {
 
 		BigDecimal value;
 
@@ -30,33 +30,27 @@ public class ControllerTest {
 		}
 	}
 
-	public class FakeProvider implements IProvider {
+	public class FakeProvider implements Provider {
 
 		int callToReturnData = 10;
 		int callIdx = 0;
-
-		@Override
-		public String getData(CurrencyTypes code, LocalDate date) {
-
-			if (callIdx >= callToReturnData) {
-				return String.valueOf(callIdx);
-			}
-			callIdx++;
-
-			return null;
-		}
 
 		public FakeProvider(int callToReturnData) {
 			this.callToReturnData = callToReturnData;
 		}
 
 		@Override
-		public IConverter getConverter() {
-			return new FakeConverter(new BigDecimal("1.23456789"));
+		public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+			if (callIdx >= callToReturnData) {
+				return BigDecimal.valueOf(callIdx);
+			}
+			callIdx++;
+
+			return null;
 		}
 
 		@Override
-		public void setData(Rate rate) {
+		public void saveRate(Rate rate) {
 			// TODO Auto-generated method stub
 			
 		}

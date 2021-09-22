@@ -33,7 +33,7 @@ public class JCurrencyTest {
 		BigDecimal usdAskPriceForDay20160412 = new BigDecimal("3.7695");
 
 		// When
-		Optional<Rate> result = controller.exchange(currency, quantity, date);
+		Optional<Rate> result = controller.tryExchange(currency, quantity, date);
 
 		// Then
 		assertThat(result.get().getRate()).isEqualTo(quantity.multiply(usdAskPriceForDay20160412));
@@ -48,14 +48,14 @@ public class JCurrencyTest {
 
 		// When
 		LocalDate date = null;
-		Optional<Rate> response = controller.exchange(currency, quantity, date);
+		Optional<Rate> response = controller.tryExchange(currency, quantity, date);
 
 		// Then
 		assertThat(response).isNotNull();
 
 		// When
 		date = LocalDate.now().plusDays(30);
-		response = controller.exchange(currency, quantity, date);
+		response = controller.tryExchange(currency, quantity, date);
 
 		// Then
 		assertThat(response).isNotNull();
@@ -70,7 +70,7 @@ public class JCurrencyTest {
 		LocalDate date = LocalDate.of(2016, 04, 12);
 
 		// When
-		Throwable throwable = catchThrowable(() -> controller.exchange(currency, quantity, date));
+		Throwable throwable = catchThrowable(() -> controller.tryExchange(currency, quantity, date));
 
 		// Then
 		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Code not valid");
@@ -85,7 +85,7 @@ public class JCurrencyTest {
 		LocalDate date = LocalDate.of(2016, 04, 12);
 
 		// When
-		Throwable throwable = catchThrowable(() -> controller.exchange(currency, quantity, date));
+		Throwable throwable = catchThrowable(() -> controller.tryExchange(currency, quantity, date));
 
 		// Then
 		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Quantity not valid");

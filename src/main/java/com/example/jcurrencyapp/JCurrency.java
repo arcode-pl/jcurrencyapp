@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.provider.IProvider;
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.exceptions.ExceptionHandler;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
@@ -20,7 +20,7 @@ public class JCurrency {
 		this.ctrl = new Controller();
 	}
 
-	public JCurrency(List<IProvider> providers) {
+	public JCurrency(List<Provider> providers) {
 		this.validator = new Validator();
 		this.ctrl = new Controller(providers);
 	}
@@ -32,19 +32,18 @@ public class JCurrency {
 	public void setConfig(Config config) {
 		this.ctrl.setConfig(config);
 	}
-	
-	//clear cache? force read?
 
-	public Optional<Rate> exchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
-
+	public Optional<Rate> tryExchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
+		Optional<Rate> result = Optional.empty();
+		
 		try {
 			validator.validateInputs(code, quantity);
 			Rate rate = ctrl.getRate(code, validator.fixDate(date));
-			return Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
+			result = Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}
-
-		return Optional.empty();
+		
+		return result;
 	}
 }

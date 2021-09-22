@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpJsonConverterTest {
@@ -21,7 +22,7 @@ public class NbpJsonConverterTest {
 	public void shouldReturnAskPrice_WhenGivenSampleJsonStringFromNbp() {
 
 		// Given
-		NbpJsonConverter converter = new NbpJsonConverter();
+		NbpJsonConverterImpl converter = new NbpJsonConverterImpl();
 		String data = "{\n" + "	\"table\":\"C\",\n" + "	\"currency\":\"euro\",\n" + "	\"code\":\"EUR\",\n"
 				+ "	\"rates\":\n" + "	[{\n" + "		\"no\":\"178/C/NBP/2021\",\n" + "		\"effectiveDate\":\n"
 				+ "		\"2021-09-14\",\n" + "		\"bid\":4.5012,\n" + "		\"ask\":4.5922\n" + "	}]\n" + "}";
@@ -37,7 +38,7 @@ public class NbpJsonConverterTest {
 	public void shouldThrownException_WhenGivenBrokenJsonStringFromNbp() {
 
 		// Given
-		NbpJsonConverter converter = new NbpJsonConverter();
+		NbpJsonConverterImpl converter = new NbpJsonConverterImpl();
 		String data = "{\n" + "	\"table\":\"C\",\n" + "	\"currency\":\"euro\",\n" + "		\"bi*d\":4.5012,\n"
 				+ "		\"ask\":4.5922\n" + "	}]\n" + "}";
 
@@ -52,7 +53,7 @@ public class NbpJsonConverterTest {
 	@Test
 	public void shouldThrownException_WhenGivenNullString() {
 		// Given
-		NbpJsonConverter converter = new NbpJsonConverter();
+		NbpJsonConverterImpl converter = new NbpJsonConverterImpl();
 		String data = null;
 
 		// When
