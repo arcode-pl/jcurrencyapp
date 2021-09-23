@@ -4,10 +4,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.IntStream;
 
-import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
-import com.example.jcurrencyapp.data.provider.NbpProviderImpl;
+import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
@@ -21,7 +19,7 @@ public class Controller {
 	private Config config;
 
 	public Controller() {
-		this.providers = Arrays.asList(new NbpProviderImpl(new NbpJsonConverterImpl()));
+		this.providers = Arrays.asList(new NbpJsonProviderImpl());
 		this.config = new Config();
 	}
 

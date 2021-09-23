@@ -6,10 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
-import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.data.provider.CacheProviderImpl;
-import com.example.jcurrencyapp.data.provider.NbpProviderImpl;
+import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
+import com.example.jcurrencyapp.data.provider.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
@@ -28,8 +27,8 @@ public class Demo {
 
 		List<Provider> providers = Arrays.asList(
 				new CacheProviderImpl(), 
-				new NbpProviderImpl(new NbpJsonConverterImpl()),
-				new NbpProviderImpl(new NbpXmlConverterImpl()));
+				new NbpJsonProviderImpl(),
+				new NbpXmlProviderImpl());
 		jcurrency = new JCurrency(providers);
 		result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("2.0"), LocalDate.now());
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));

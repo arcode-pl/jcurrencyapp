@@ -5,56 +5,55 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.List;
 
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.data.converter.Converter;
+import com.example.jcurrencyapp.data.provider.CacheProviderImpl;
+import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
 public class ControllerTest {
 
-	public class FakeConverter implements Converter {
+	private class FakeProviderImpl implements Provider {
 
-		BigDecimal value;
+		public int callsToGetData;
+		public int getCallsCounter;
+		@SuppressWarnings("unused")
+		public int saveCallsCounter;
 
-		public FakeConverter(BigDecimal value) {
-			this.value = value;
-		}
-
-		@Override
-		public BigDecimal getRate(String data) {
-			return data != null ? value : null;
-		}
-	}
-
-	public class FakeProvider implements Provider {
-
-		int callToReturnData = 10;
-		int callIdx = 0;
-
-		public FakeProvider(int callToReturnData) {
-			this.callToReturnData = callToReturnData;
+		public FakeProviderImpl(int callsToGetData) {
+			this.callsToGetData = callsToGetData;
+			this.getCallsCounter = 0;
+			this.saveCallsCounter = 0;
 		}
 
 		@Override
 		public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
-			if (callIdx >= callToReturnData) {
-				return BigDecimal.valueOf(callIdx);
-			}
-			callIdx++;
+			BigDecimal result = null;
 
-			return null;
+			if (getCallsCounter >= callsToGetData) {
+				result = new BigDecimal("1.23456789");
+			}
+			getCallsCounter++;
+
+			return result;
 		}
 
 		@Override
 		public void saveRate(Rate rate) {
-			// TODO Auto-generated method stub
-			
+			this.saveCallsCounter++;
 		}
 	}
+
+	@Mock
+	FakeProviderImpl provider0, provider1, provider2;
 
 	@BeforeClass
 	public void init() {
@@ -62,67 +61,47 @@ public class ControllerTest {
 	}
 
 	@Test
-	public void shouldReturnCallsNumberToAccessData_WhenDataIsAccessiebleWithinMaxBackDays() {
-
-		// Given
-		Controller ctrl;
-
-		// When
-		int maxCallsToAccessData = 0;
-		int callsToAccessData = 0;
-
-		ctrl = new Controller(
-				Arrays.asList(
-						new FakeProvider(callsToAccessData + 1), // after first call from first provider
-						new FakeProvider(callsToAccessData + 0))); // immediately from second provider
-
-		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
-
-		// Then
-		assertThat(result.getDate()).isEqualTo(LocalDate.now());
-
-		// When
-		maxCallsToAccessData = 10;
-		callsToAccessData = 10;
-		ctrl = new Controller(Arrays.asList(
-				new FakeProvider(callsToAccessData*2), 
-				new FakeProvider(callsToAccessData)));
-		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);
+	public void shouldSaveToPreviousProviders_WhenDataIsAvailableOnActualProvider() {
+		// Given							 // I	II	III
+		provider0 = new FakeProviderImpl(3); // get get save
+		provider1 = new FakeProviderImpl(1); // get get
+		provider2 = new FakeProviderImpl(2); // get 
 		
-		result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+		Controller ctrl = new Controller(List.of(provider0,	provider1, provider2));
 
+		// When
+		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+		
 		// Then
-		assertThat(result.getDate()).isEqualTo(LocalDate.now().minusDays(callsToAccessData));
+		assertThat(provider0.getCallsCounter).isEqualTo(2);
+		assertThat(provider0.saveCallsCounter).isEqualTo(1);
+		assertThat(provider1.getCallsCounter).isEqualTo(2);
+		assertThat(provider1.saveCallsCounter).isEqualTo(0);
+		assertThat(provider2.getCallsCounter).isEqualTo(1);
+		assertThat(provider2.saveCallsCounter).isEqualTo(0);
+		assertThat(result).isNotNull();
 	}
-
+	
 	@Test
-	public void shouldReturnNull_WhenDataIsNotAccessiebleWithinMaxBackDays() {
-		// Given fake provider
-		Controller ctrl;
-
+	public void shouldReturnNull_WhenDataIsNotAvailableWithinMaxBackDays() {
+		// Given							 // I	II	III
+		provider0 = new FakeProviderImpl(4); // get get max days reached
+		provider1 = new FakeProviderImpl(2); // get get
+		provider2 = new FakeProviderImpl(3); // get get
+		
+		Controller ctrl = new Controller(List.of(provider0,	provider1, provider2));
+		ctrl.getConfig().setMaxBackDays(1);
+		
 		// When
-		int maxCallsToAccessData = 0;
-		int callsToAccessData = 1;
-		ctrl = new Controller(Arrays.asList(
-				new FakeProvider(callsToAccessData + 1), 
-				new FakeProvider(callsToAccessData + 0)));
-		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);;
-
 		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
 		
 		// Then
-		assertThat(result).isNull();
-
-		// When
-		maxCallsToAccessData = 10;
-		callsToAccessData = 11;
-		ctrl = new Controller(Arrays.asList(
-				new FakeProvider(callsToAccessData + 1), 
-				new FakeProvider(callsToAccessData + 0)));
-		ctrl.getConfig().setMaxBackDays(maxCallsToAccessData);;
-		result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
-
-		// Then
+		assertThat(provider0.getCallsCounter).isEqualTo(2);
+		assertThat(provider0.saveCallsCounter).isEqualTo(0);
+		assertThat(provider1.getCallsCounter).isEqualTo(2);
+		assertThat(provider1.saveCallsCounter).isEqualTo(0);
+		assertThat(provider2.getCallsCounter).isEqualTo(2);
+		assertThat(provider2.saveCallsCounter).isEqualTo(0);
 		assertThat(result).isNull();
 	}
 }

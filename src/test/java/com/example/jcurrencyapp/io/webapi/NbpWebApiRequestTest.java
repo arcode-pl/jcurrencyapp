@@ -1,7 +1,15 @@
 package com.example.jcurrencyapp.io.webapi;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.time.LocalDate;
+
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.example.jcurrencyapp.exceptions.WebApiException;
+import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpWebApiRequestTest {
 
@@ -11,42 +19,38 @@ public class NbpWebApiRequestTest {
 	}
 
 	@Test
-	public void shouldReturnValidQuery_WhenGivenJsonFormat() {
-//		// Given
-//		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
-//		NbpWebApiRequest request = new NbpWebApiRequest();
-//
-//		// When
-//		String query = request.getSimpleQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12), false);
-//
-//		// Then
-//		assertThat(query).isEqualTo(validateQuery);
-	}
+	public void shouldReturnValidQuery_WhenGivenJsonOrXmlFormat() {
+		// Given
+		String jsonQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
+		String xmlQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=xml";
 
-	@Test
-	public void getSimpleQueryTest_GivenXmlFormat_WhenCall_ShouldReturnValidQuery() {
-//		// Given
-//		String validateQuery = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=xml";
-//		NbpWebApiRequest request = new NbpWebApiRequest();
-//
-//		// When
-//		String query = request.getSimpleQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12), true);
-//
-//		// Then
-//		assertThat(query).isEqualTo(validateQuery);
+		// When
+		String query = NbpWebApiRequest.getJsonQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));
+
+		// Then
+		assertThat(query).isEqualTo(jsonQueryValidate);
+		
+		// When
+		query = NbpWebApiRequest.getXmlQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));
+
+		// Then
+		assertThat(query).isEqualTo(xmlQueryValidate);
 	}
 
 	@Test
 	public void shouldThrownWebApiException_WhenGivenWrongInputs() {
-//		// Given
-//		NbpWebApiRequest request = new NbpWebApiRequest();
-//		CurrencyTypes code = CurrencyTypes.USD;
-//		LocalDate date = null;
-//		
-//		// When 
-//		Throwable throwable = catchThrowable(() -> request.getSimpleQuery(code, date, false));
-//		
-//		// Then
-//		assertThat(throwable).isInstanceOf(AppException.class).hasMessageContaining("Can't getSimpleQuery:");
+		// Given
+		
+		// When 
+		Throwable throwable = catchThrowable(() -> NbpWebApiRequest.getJsonQuery(null, null));
+		
+		// Then
+		assertThat(throwable).isInstanceOf(WebApiException.class).hasMessageContaining("Can't get query:");
+		
+		// When 
+		throwable = catchThrowable(() -> NbpWebApiRequest.getXmlQuery(null, null));
+		
+		// Then
+		assertThat(throwable).isInstanceOf(WebApiException.class).hasMessageContaining("Can't get query:");
 	}
 }

@@ -3,40 +3,25 @@ package com.example.jcurrencyapp.io.webapi;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.example.jcurrencyapp.exceptions.ExceptionHandler;
 import com.example.jcurrencyapp.exceptions.WebApiException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpWebApiRequest {
-	private final String host = "https://api.nbp.pl/api/exchangerates/rates/c/";
-	
-	CurrencyTypes code;
-	LocalDate date;
-	
-	public NbpWebApiRequest(CurrencyTypes code, LocalDate date) {
-		this.code = code;
-		this.date = date;
-	}
+	private final static String host = "https://api.nbp.pl/api/exchangerates/rates/c/";
 
-	public String getJsonQuery() {
-		return this.getQuery() + "json";
+	public static String getJsonQuery(CurrencyTypes code, LocalDate date) {
+		return getQuery(code, date) + "/?format=json";
 	}
 	
-	public String getXmlQuery() {
-		return this.getQuery() + "xml";
+	public static String getXmlQuery(CurrencyTypes code, LocalDate date) {
+		return getQuery(code, date) + "/?format=xml";
 	}
 	
-	private String getQuery() {
-		String result = "";
-
+	private static String getQuery(CurrencyTypes code, LocalDate date) {
 		try {
-			return host + code.toString().toLowerCase() + "/" + date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-					+ "/?format=";
+			return host + code.toString().toLowerCase() + "/" + date.format(DateTimeFormatter.ISO_LOCAL_DATE);
 		} catch (Exception e) {
-			ExceptionHandler
-					.handleException(new WebApiException("Can't getSimpleQuery: " + e.getMessage(), e.getCause()));
+			throw new WebApiException("Can't get query: " + e.getMessage(), e.getCause());
 		}
-
-		return result;
 	}
 }

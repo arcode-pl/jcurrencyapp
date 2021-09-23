@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.converter.impl;
+package com.example.jcurrencyapp.data.converter.nbp;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -8,10 +8,9 @@ import java.math.BigDecimal;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
-public class NbpXmlConverterTest {
+public class NbpXmlConverterImplTest {
 
 	@BeforeClass
 	public void init() {
@@ -46,6 +45,20 @@ public class NbpXmlConverterTest {
 				+ "			<No>178/C/NBP/2021</No>\n" + "			<EffectiveDate>2021-09-14</EffectiveDate>\n"
 				+ "			<Bid>3.8146</Bid>\n" + "			<Ask>3.8916</Ask>\n" + "		</Rate>\n"
 				+ "</ExchangeRatesSeries>";
+
+		// When
+		Throwable throwable = catchThrowable(() -> converter.getRate(data));
+
+		// Then
+		assertThat(throwable).isInstanceOf(ConverterException.class)
+				.hasMessageContaining("Can't get rate for input data: ");
+	}
+	
+	@Test
+	public void shouldThrownException_WhenGivenNullStringFromNbp() {
+		// Given
+		NbpXmlConverterImpl converter = new NbpXmlConverterImpl();
+		String data = null;
 
 		// When
 		Throwable throwable = catchThrowable(() -> converter.getRate(data));
