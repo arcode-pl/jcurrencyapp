@@ -46,11 +46,14 @@ public class Controller {
 				rate = provider.getRate(code, date);
 				if (rate != null) {
 					Rate result = new Rate(code, date, rate);
-					
-					int currentProviderIdx = providers.indexOf(provider);
-					for (int i = 0 ; i < currentProviderIdx; i++) {
-						providers.get(i).saveRate(result);				
-					}
+
+					providers.stream().filter(p -> providers.indexOf(p) < providers.indexOf(provider))
+							.forEach(p -> p.saveRate(result));
+
+//					int currentProviderIdx = providers.indexOf(provider);
+//					for (int i = 0 ; i < currentProviderIdx; i++) {
+//						providers.get(i).saveRate(result);
+//					}
 
 					return result;
 				}
