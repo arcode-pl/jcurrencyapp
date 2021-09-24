@@ -21,7 +21,6 @@ public class ControllerTest {
 
 		public int callsToGetData;
 		public int getRateTimes;
-		@SuppressWarnings("unused")
 		public int saveRateTimes;
 
 		public FakeProviderImpl(int callsToGetData) {
