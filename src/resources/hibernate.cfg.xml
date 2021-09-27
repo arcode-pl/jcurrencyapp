@@ -12,11 +12,14 @@
         <property name="hibernate.connection.password">emar1</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <property name="hibernate.implicit_naming_strategy">legacy-hbm</property>
+        <!-- <property name="hibernate.cache.use_second_level_cache">true</property>
+        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property> -->
         <property name="show_sql">true</property>
         <property name="format_sql">true</property>
         <property name="hbm2ddl.auto">create</property>
-        <mapping resource="country.hbm.xml"/>
+        <!--<mapping resource="country.hbm.xml"/>-->
+        <mapping class="com.example.jcurrencyapp.model.db.Country"/>
         <mapping class="com.example.jcurrencyapp.model.db.Currency"/>
-        
+        <mapping class="com.example.jcurrencyapp.model.db.Quotation"/>
     </session-factory>
 </hibernate-configuration>
