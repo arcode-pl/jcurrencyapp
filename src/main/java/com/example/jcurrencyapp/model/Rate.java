@@ -1,7 +1,9 @@
 package com.example.jcurrencyapp.model;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Rate {
@@ -14,10 +16,22 @@ public class Rate {
 		this.date = date;
 		this.rate = rate;
 	}
+	
+	public Rate(String code, LocalDate date, BigDecimal rate) {
+		this.code = CurrencyTypes.get(code);
+		this.date = date;
+		this.rate = rate;
+	}
 
 	public Rate(CurrencyTypes code, LocalDate date) {
 		this.code = code;
 		this.date = date;
+	}
+
+	public Rate(String code, String date, Double rate) {
+		this.code = CurrencyTypes.get(code);
+		this.date = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+		this.rate = BigDecimal.valueOf(rate);
 	}
 
 	public CurrencyTypes getCode() {

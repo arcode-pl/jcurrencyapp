@@ -67,15 +67,17 @@ public class Demo {
 		Optional<Rate> result;
 
 		// JSON
-		JCurrency jcurrency = new JCurrency();
-		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
-		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
+//		JCurrency jcurrency = new JCurrency();
+//		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
+//		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
 		List<Provider> providers = Arrays.asList(new DatabaseProviderImpl(), new CacheProviderImpl(),
 				new NbpJsonProviderImpl(), new NbpXmlProviderImpl());
-		jcurrency = new JCurrency(providers);
-
-		LocalDate date = LocalDate.now();
+		JCurrency jcurrency = new JCurrency(providers);
+		
+		jcurrency.updateRatesFromProvider(new NbpJsonProviderImpl(), CurrencyTypes.EUR, LocalDate.of(2002, 1, 1), LocalDate.now());
+		
+		/*LocalDate date = LocalDate.now();
 		for (int i = 0; i < 50; i++) {
 			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
 			date = date.minusDays(1);
@@ -86,8 +88,9 @@ public class Demo {
 			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
 			date = date.minusDays(1);
 			System.out.println(result);
-		}
-
+		}*/
+		
+		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
 		HibernateUtil.shutdown();

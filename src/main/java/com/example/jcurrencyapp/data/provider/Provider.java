@@ -13,4 +13,5 @@ public interface Provider {
 	public void saveRate(Rate rate);
 	
 	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate);
+	public void saveRates(List<Rate> rates);
 }

@@ -2,6 +2,7 @@ package com.example.jcurrencyapp.data.provider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,26 @@ public class CacheProviderImpl implements Provider {
 
 	@Override
 	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		BigDecimal rate;
+		List<Rate> rates = new ArrayList<Rate>();
+		while (startDate.isBefore(endDate)) {
+			rate = this.getRate(code, startDate);
+			if (rate != null) {
+				rates.add(new Rate(code, startDate, rate));
+			}
+
+			startDate = startDate.plusDays(1);
+		}
+
+		return rates;
+	}
+
+	@Override
+	public void saveRates(List<Rate> rates) {
+		if (rates != null) {
+			for (Rate rate : rates) {
+				this.saveRate(rate);
+			}
+		}
 	}
 }

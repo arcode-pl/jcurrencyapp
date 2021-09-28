@@ -66,4 +66,11 @@ public class Controller {
 		return null;
 	}
 
+	public void updateRates(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		List<Rate> rates = provider.getRates(code, startDate, endDate);
+		
+		for (Provider current : providers) {
+			current.saveRates(rates);
+		}
+	}
 }

@@ -46,4 +46,8 @@ public class JCurrency {
 		
 		return result;
 	}
+	
+	public void updateRatesFromProvider(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+			controller.updateRates(provider, code, startDate, endDate);
+	}
 }

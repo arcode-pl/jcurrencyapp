@@ -2,6 +2,7 @@ package com.example.jcurrencyapp.data.provider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,17 @@ public class DatabaseProviderImpl implements Provider {
 		query.setParameter("currency", currency);
 
 		return (Quotation) query.getSingleResult();
+	}
+
+	public List<Quotation> readQuotation(Currency currency, LocalDate startDate, LocalDate endDate) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		Query query = session.getNamedQuery("Quotation.findByCodeAndDateRange");
+		query.setParameter("startDate", startDate);
+		query.setParameter("endDate", endDate);
+		query.setParameter("currency", currency);
+
+		return (List<Quotation>) query.getResultList();
 	}
 
 	@Override
@@ -81,8 +93,30 @@ public class DatabaseProviderImpl implements Provider {
 
 	@Override
 	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		List<Quotation> quotations;
+		List<Rate> rates = new ArrayList<Rate>();
+
+		try {
+			quotations = this.readQuotation(this.readCurrency(code), startDate, endDate);
+			for (Quotation quotation : quotations) {
+				rates.add(
+						new Rate(quotation.getCurrency().getCurrencyCode(), quotation.getDate(), quotation.getRate()));
+			}
+
+		} catch (NoResultException e) {
+			return null;
+		}
+
+		return rates;
+	}
+
+	@Override
+	public void saveRates(List<Rate> rates) {
+		if (rates != null) {
+			for (Rate rate : rates) {
+				this.saveRate(rate);
+			}
+		}
 	}
 
 }
