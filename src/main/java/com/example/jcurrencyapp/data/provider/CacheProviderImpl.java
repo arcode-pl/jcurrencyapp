@@ -3,6 +3,7 @@ package com.example.jcurrencyapp.data.provider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.example.jcurrencyapp.model.CurrencyTypes;
@@ -22,5 +23,11 @@ public class CacheProviderImpl implements Provider {
 		if (rate != null) {
 			memory.put(rate, rate.getRate());
 		}
+	}
+
+	@Override
+	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

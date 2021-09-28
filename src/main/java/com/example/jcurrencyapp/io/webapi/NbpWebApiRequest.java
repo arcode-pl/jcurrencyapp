@@ -13,8 +13,20 @@ public class NbpWebApiRequest {
 		return getQuery(code, date) + "/?format=json";
 	}
 	
+	public static String getJsonQuery(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		return getQuery(code, startDate)
+				+ "/" + endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+				+ "/?format=json";
+	}
+	
 	public static String getXmlQuery(CurrencyTypes code, LocalDate date) {
 		return getQuery(code, date) + "/?format=xml";
+	}
+	
+	public static String getXmlQuery(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		return getQuery(code, startDate)
+				+ "/" + endDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+				+ "/?format=xml";
 	}
 	
 	private static String getQuery(CurrencyTypes code, LocalDate date) {

@@ -1,6 +1,8 @@
 package com.example.jcurrencyapp.model.db;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 //import org.hibernate.annotations.Cache;
 //import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,16 +10,20 @@ import javax.persistence.*;
 
 
 @Entity
-@NamedQuery(name="Country.findAll", query="SELECT c FROM Country c")
-
 //@Cacheable
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "country")
+
+@NamedQueries({
+	//@NamedQuery(name = "Country.findAll", query = "SELECT u FROM Country ORDER BY u.countryName"),
+	//@NamedQuery(name = "Country.findByCountryName", query = "SELECT u FROM Country WHERE u.countryName = :countryName")
+})
+
 public class Country {
 
 	private Long countryId;
 	private String countryName;
-	//private Set<Currency> officialCurrencies = new HashSet<Currency>(0);
+	private List<Currency> officialCurrencies = new ArrayList<Currency>(0);
 
 	public Country() {
 		super();
@@ -52,17 +58,15 @@ public class Country {
 		return "Country [countryId=" + countryId + ", countryName=" + countryName + "]";
 	}
 
-//	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//	@JoinTable(name = "country_currency", 
-//		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false) }, 
-//		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false) })
-//	public Set<Currency> getOfficialCurrencies() {
-//		return officialCurrencies;
-//	}
-//
-//	public void setOfficialCurrencies(Set<Currency> officialCurrencies) {
-//		this.officialCurrencies = officialCurrencies;
-//	}
+	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name = "country_currency", 
+		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false) }, 
+		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false) })
+	public List<Currency> getOfficialCurrencies() {
+		return officialCurrencies;
+	}
 
-	
+	public void setOfficialCurrencies(List<Currency> officialCurrencies) {
+		this.officialCurrencies = officialCurrencies;
+	}
 }

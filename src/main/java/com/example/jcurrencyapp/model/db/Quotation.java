@@ -1,49 +1,58 @@
 package com.example.jcurrencyapp.model.db;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.example.jcurrencyapp.model.CurrencyTypes;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "quotation")
+
+@NamedQueries({
+		// @NamedQuery(name = "Quotation.findAll", query = "SELECT u FROM Quotation
+		// ORDER BY u.date"),
+		// @NamedQuery(name = "Quotation.findAllForCurrency", query = "SELECT u FROM
+		// Quotation WHERE u.currencyId = :currrencyId"),
+		@NamedQuery(name = "Quotation.findByCodeAndDate", query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.date = :date"),
+		@NamedQuery(name = "Quotation.findByCodeAndRateBiggerThan", query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.rate > :rate") })
+
 public class Quotation {
-	
-	
+
 	private Long quotationId;
-	private Long currencyId;
+	private Currency currency;
 	LocalDate date;
 	private BigDecimal rate;
-	
-	public Quotation(CurrencyTypes code, LocalDate date) {
-		
+
+	public Quotation() {
+		super();
 	}
-	
+
+	public Quotation(Currency currency, LocalDate date, BigDecimal rate) {
+		super();
+		this.currency = currency;
+		this.date = date;
+		this.rate = rate;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "quotation_id")
 	public Long getQuotationId() {
 		return quotationId;
 	}
-	
+
 	public void setQuotationId(Long quotationId) {
 		this.quotationId = quotationId;
 	}
 
-	public Long getCurrencyId() {
-		return currencyId;
+	@ManyToOne
+	@JoinColumn(name = "currency_id")
+	public Currency getCurrency() {
+		return currency;
 	}
 
-	public void setCurrencyId(Long currencyId) {
-		this.currencyId = currencyId;
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 
 	public LocalDate getDate() {
@@ -54,11 +63,18 @@ public class Quotation {
 		this.date = date;
 	}
 
-	public BigDecimal getAsk() {
+	@Column(name = "rate", precision = 8, scale = 4)
+	public BigDecimal getRate() {
 		return rate;
 	}
 
-	public void setAsk(BigDecimal ask) {
+	public void setRate(BigDecimal ask) {
 		this.rate = ask;
+	}
+
+	@Override
+	public String toString() {
+		return "Quotation [quotationId=" + quotationId + ", currency=" + currency + ", date=" + date + ", rate=" + rate
+				+ "]";
 	}
 }

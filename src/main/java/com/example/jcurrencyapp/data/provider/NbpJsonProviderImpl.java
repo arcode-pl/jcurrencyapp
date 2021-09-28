@@ -2,6 +2,7 @@ package com.example.jcurrencyapp.data.provider;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.example.jcurrencyapp.data.converter.Converter;
 import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
@@ -35,5 +36,15 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 		// TODO Auto-generated method stub
 		
 	}
-
+	
+	@Override
+	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		
+		WebApiResponse response = WebApiController.tryReadApi(NbpWebApiRequest.getJsonQuery(code, startDate, endDate));
+		if (response.getCode() == 200) {
+			return converter.getRates(response.getText());
+		}
+		
+		return null;
+	}
 }

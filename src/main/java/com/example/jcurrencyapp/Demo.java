@@ -29,10 +29,10 @@ public class Demo {
 		// This is test code - to remove
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;
-		
+
 		List<Currency> currencies = new ArrayList<Currency>();
 		Set<Currency> officialCurrencies = null;
-		
+
 		try {
 			tx = session.beginTransaction();
 			for (CurrencyTypes val : CurrencyTypes.values()) {
@@ -45,9 +45,9 @@ public class Demo {
 			for (String code : countryCodes) {
 				officialCurrencies = new HashSet<Currency>(0);
 				officialCurrencies.add(currencies.get(0));
-				
+
 				Country country = new Country(code);
-				//country.setOfficialCurrencies(officialCurrencies);
+				// country.setOfficialCurrencies(officialCurrencies);
 				session.save(country);
 			}
 
@@ -63,7 +63,7 @@ public class Demo {
 	public static void main(String[] args) {
 
 		init_tables();
-		
+
 		Optional<Rate> result;
 
 		// JSON
@@ -74,7 +74,20 @@ public class Demo {
 		List<Provider> providers = Arrays.asList(new DatabaseProviderImpl(), new CacheProviderImpl(),
 				new NbpJsonProviderImpl(), new NbpXmlProviderImpl());
 		jcurrency = new JCurrency(providers);
-		result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("2.0"), LocalDate.now());
+
+		LocalDate date = LocalDate.now();
+		for (int i = 0; i < 50; i++) {
+			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
+			date = date.minusDays(1);
+		}
+		
+		date = LocalDate.now();
+		for (int i = 0; i < 50; i++) {
+			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
+			date = date.minusDays(1);
+			System.out.println(result);
+		}
+
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
 		HibernateUtil.shutdown();
