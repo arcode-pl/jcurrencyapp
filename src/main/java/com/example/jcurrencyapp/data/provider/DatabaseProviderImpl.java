@@ -36,13 +36,14 @@ public class DatabaseProviderImpl implements Provider {
 	public Quotation readQuotation(Currency currency, LocalDate date) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Quotation.findByCodeAndDate");
+		Query query = session.getNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
 		query.setParameter("date", date);
 		query.setParameter("currency", currency);
 
 		return (Quotation) query.getSingleResult();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<Quotation> readQuotation(Currency currency, LocalDate startDate, LocalDate endDate) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 

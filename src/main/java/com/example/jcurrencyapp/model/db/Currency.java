@@ -15,16 +15,18 @@ import javax.persistence.*;
 @Table(name = "currency")
 
 @NamedQueries({
-	@NamedQuery(name = "Currency.findAll", query = "SELECT u FROM Currency u ORDER BY u.currencyCode"),
-	@NamedQuery(name = "Currency.findByCode", query = "SELECT u FROM Currency u WHERE u.currencyCode = :currencyCode")
+	@NamedQuery(name = Currency.FIND_ALL, query = "SELECT u FROM Currency u ORDER BY u.currencyCode"),
+	@NamedQuery(name = Currency.FIND_BY_CODE, query = "SELECT u FROM Currency u WHERE u.currencyCode = :currencyCode")
 })
 
 public class Currency {
-
+	public static final String FIND_ALL = "Currency.findAll";
+	public static final String FIND_BY_CODE = "Currency.findByCode";
+	
 	private Long currencyId;
 
 	private String currencyCode;
-	private List<Country> supportedCountries = new ArrayList<Country>(0);
+	private Set<Country> supportedCountries = new HashSet<Country>(0);
     private List<Quotation> quotations = new ArrayList<Quotation>();
 	
 	public Currency() {
@@ -56,11 +58,11 @@ public class Currency {
 	}
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
-	public List<Country> getCountries() {
+	public Set<Country> getCountries() {
 		return supportedCountries;
 	}
 	
-	public void setCountries(List<Country> supportedCountries) {
+	public void setCountries(Set<Country> supportedCountries) {
 		this.supportedCountries = supportedCountries;
 	}
 	

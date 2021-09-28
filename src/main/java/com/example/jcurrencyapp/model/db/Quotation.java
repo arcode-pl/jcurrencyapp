@@ -9,15 +9,12 @@ import javax.persistence.*;
 @Table(name = "quotation")
 
 @NamedQueries({
-		// @NamedQuery(name = "Quotation.findAll", query = "SELECT u FROM Quotation
-		// ORDER BY u.date"),
-		// @NamedQuery(name = "Quotation.findAllForCurrency", query = "SELECT u FROM
-		// Quotation WHERE u.currencyId = :currrencyId"),
-		@NamedQuery(name = "Quotation.findByCodeAndDate", query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.date = :date"),
-		@NamedQuery(name = "Quotation.findByCodeAndRateBiggerThan", query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.rate > :rate") })
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.date = :date") })
 
 public class Quotation {
 
+	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
+	
 	private Long quotationId;
 	private Currency currency;
 	LocalDate date;

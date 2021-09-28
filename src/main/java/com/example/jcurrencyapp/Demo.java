@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -22,6 +24,7 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 import com.example.jcurrencyapp.model.db.Country;
 import com.example.jcurrencyapp.model.db.Currency;
+import com.example.jcurrencyapp.model.db.Quotation;
 
 public class Demo {
 
@@ -45,9 +48,10 @@ public class Demo {
 			for (String code : countryCodes) {
 				officialCurrencies = new HashSet<Currency>(0);
 				officialCurrencies.add(currencies.get(0));
-
+				officialCurrencies.add(currencies.get(0));
+				
 				Country country = new Country(code);
-				// country.setOfficialCurrencies(officialCurrencies);
+				country.setOfficialCurrencies(officialCurrencies);
 				session.save(country);
 			}
 
@@ -59,6 +63,37 @@ public class Demo {
 		}
 	}
 
+	public static Currency readCurrency(CurrencyTypes code) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		Query query = session.getNamedQuery("Currency.findByCode");
+		query.setParameter("currencyCode", code.toString());
+
+		return (Currency) query.getSingleResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Quotation> readMaxValues(Currency currency, int limit) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		Query query = session.getNamedQuery("Quotation.findMaxByCodeWithLimit");
+		query.setParameter("currency", currency);
+		query.setParameter("limit", limit);
+
+		return (List<Quotation>) query.getSingleResult();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<Quotation> readMinValues(Currency currency, int limit) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+
+		Query query = session.getNamedQuery("Quotation.findMinByCodeWithLimit");
+		query.setParameter("currency", currency);
+		query.setParameter("limit", limit);
+
+		return (List<Quotation>) query.getSingleResult();
+	}
+	
 	// Example usage of API
 	public static void main(String[] args) {
 
@@ -93,6 +128,9 @@ public class Demo {
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
+		//List<Quotation> max = readMaxValues(readCurrency(CurrencyTypes.EUR), 5);
+		//System.out.println(max);
+		
 		HibernateUtil.shutdown();
 
 		return;

@@ -21,5 +21,6 @@
         <mapping class="com.example.jcurrencyapp.model.db.Country"/>
         <mapping class="com.example.jcurrencyapp.model.db.Currency"/>
         <mapping class="com.example.jcurrencyapp.model.db.Quotation"/>
+        <!-- <property name="hibernate.archive.autodetection">class, hbm</property> -->
     </session-factory>
 </hibernate-configuration>

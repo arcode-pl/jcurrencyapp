@@ -1,13 +1,11 @@
 package com.example.jcurrencyapp.model.db;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
+
 //import org.hibernate.annotations.Cache;
 //import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
-
 
 @Entity
 //@Cacheable
@@ -23,7 +21,7 @@ public class Country {
 
 	private Long countryId;
 	private String countryName;
-	private List<Currency> officialCurrencies = new ArrayList<Currency>(0);
+	private Set<Currency> officialCurrencies = new HashSet<Currency>(0);
 
 	public Country() {
 		super();
@@ -34,7 +32,7 @@ public class Country {
 	}
 	
 	@Id 
-	@GeneratedValue(strategy=GenerationType.SEQUENCE)    
+	@GeneratedValue(strategy=GenerationType.IDENTITY)    
 	@Column(name = "country_id")
 	public Long getCountryId() {
 		return countryId;
@@ -62,11 +60,11 @@ public class Country {
 	@JoinTable(name = "country_currency", 
 		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false) }, 
 		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false) })
-	public List<Currency> getOfficialCurrencies() {
+	public Set<Currency> getOfficialCurrencies() {
 		return officialCurrencies;
 	}
 
-	public void setOfficialCurrencies(List<Currency> officialCurrencies) {
+	public void setOfficialCurrencies(Set<Currency> officialCurrencies) {
 		this.officialCurrencies = officialCurrencies;
 	}
 }
