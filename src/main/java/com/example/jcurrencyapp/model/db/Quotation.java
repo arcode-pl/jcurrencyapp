@@ -9,12 +9,28 @@ import javax.persistence.*;
 @Table(name = "quotation")
 
 @NamedQueries({
-		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currency = :currency AND u.date = :date") })
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " AND u.date = :" + Quotation.PARAM_DATE),
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
+				+ Quotation.PARAM_END_DATE),
+		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate"),
+		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate DESC") })
 
 public class Quotation {
 
 	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
-	
+	public static final String FIND_BY_CODE_AND_DATE_RANGE = "Quotation.findByCodeAndDateRange";
+	public static final String FIND_MAX_BY_CODE = "Quotation.findMaxByCode";
+	public static final String FIND_MIN_BY_CODE = "Quotation.findMinByCode";
+
+	public static final String PARAM_DATE = "date";
+	public static final String PARAM_START_DATE = "startDate";
+	public static final String PARAM_END_DATE = "endDate";
+	public static final String PARAM_CURRENCY = "currency";
+
 	private Long quotationId;
 	private Currency currency;
 	LocalDate date;

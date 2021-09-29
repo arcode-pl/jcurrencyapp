@@ -12,6 +12,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -27,77 +28,107 @@ import com.example.jcurrencyapp.model.db.Currency;
 import com.example.jcurrencyapp.model.db.Quotation;
 
 public class Demo {
+	
+	public static final int BATCH_SIZE = 50;
 
-	public static void init_tables() {
-		// This is test code - to remove
+	public static void initCurrencies() {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;
 
-		List<Currency> currencies = new ArrayList<Currency>();
-		Set<Currency> officialCurrencies = null;
-
 		try {
 			tx = session.beginTransaction();
+
+			int i = 0;
 			for (CurrencyTypes val : CurrencyTypes.values()) {
 				Currency currency = new Currency(val);
-				currencies.add(currency);
 				session.save(currency);
-			}
-
-			String[] countryCodes = Locale.getISOCountries();
-			for (String code : countryCodes) {
-				officialCurrencies = new HashSet<Currency>(0);
-				officialCurrencies.add(currencies.get(0));
-				officialCurrencies.add(currencies.get(0));
-				
-				Country country = new Country(code);
-				country.setOfficialCurrencies(officialCurrencies);
-				session.save(country);
+				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
+					// flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
 			}
 
 			tx.commit();
-
-		} catch (Exception e) {
-			if (tx != null)
+		} catch (HibernateException e) {
+			if (tx!=null) {
 				tx.rollback();
+			}
+	        e.printStackTrace(); 
+		} finally {
+			session.close();
 		}
 	}
+	
+	public static void initCountries() {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction tx = null;
 
+		try {
+			tx = session.beginTransaction();
+
+			int i = 0;
+			for (String val : Locale.getISOCountries()) {
+				Country country = new Country(val);
+				session.save(country);
+				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
+					// flush a batch of inserts and release memory:
+					session.flush();
+					session.clear();
+				}
+			}
+
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx!=null) {
+				tx.rollback();
+			}
+	        e.printStackTrace(); 
+		} finally {
+			session.close();
+		}
+	}
+	
+	public static void initTables() {
+		initCurrencies();
+		initCountries();
+	}
+		
 	public static Currency readCurrency(CurrencyTypes code) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Currency.findByCode");
-		query.setParameter("currencyCode", code.toString());
+		Query query = session.getNamedQuery(Currency.FIND_BY_CODE);
+		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
 
 		return (Currency) query.getSingleResult();
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static List<Quotation> readMaxValues(Currency currency, int limit) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Quotation.findMaxByCodeWithLimit");
-		query.setParameter("currency", currency);
-		query.setParameter("limit", limit);
+		Query query = session.getNamedQuery(Quotation.FIND_MAX_BY_CODE);
+		query.setMaxResults(limit);
+		query.setParameter(Quotation.PARAM_CURRENCY, currency);
 
-		return (List<Quotation>) query.getSingleResult();
+		return (List<Quotation>) query.getResultList();
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public List<Quotation> readMinValues(Currency currency, int limit) {
+	public static List<Quotation> readMinValues(Currency currency, int limit) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Quotation.findMinByCodeWithLimit");
-		query.setParameter("currency", currency);
-		query.setParameter("limit", limit);
+		Query query = session.getNamedQuery(Quotation.FIND_MIN_BY_CODE);
+		query.setMaxResults(limit);
+		query.setParameter(Quotation.PARAM_CURRENCY, currency);
 
-		return (List<Quotation>) query.getSingleResult();
+		return (List<Quotation>) query.getResultList();
 	}
-	
+
 	// Example usage of API
 	public static void main(String[] args) {
 
-		init_tables();
+		initTables();
 
 		Optional<Rate> result;
 
@@ -109,28 +140,34 @@ public class Demo {
 		List<Provider> providers = Arrays.asList(new DatabaseProviderImpl(), new CacheProviderImpl(),
 				new NbpJsonProviderImpl(), new NbpXmlProviderImpl());
 		JCurrency jcurrency = new JCurrency(providers);
-		
-		jcurrency.updateRatesFromProvider(new NbpJsonProviderImpl(), CurrencyTypes.EUR, LocalDate.of(2002, 1, 1), LocalDate.now());
-		
-		/*LocalDate date = LocalDate.now();
-		for (int i = 0; i < 50; i++) {
-			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
-			date = date.minusDays(1);
+
+		jcurrency.updateRatesFromProvider(new NbpJsonProviderImpl(), CurrencyTypes.EUR, LocalDate.of(2002, 1, 1),
+				LocalDate.now());
+
+		for(Quotation var : readMaxValues(readCurrency(CurrencyTypes.EUR), 5)) {
+			System.out.println(var);
 		}
 		
-		date = LocalDate.now();
-		for (int i = 0; i < 50; i++) {
-			result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date);
-			date = date.minusDays(1);
-			System.out.println(result);
-		}*/
+		for(Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
+			System.out.println(var);
+		}
 		
+		/*
+		 * LocalDate date = LocalDate.now(); for (int i = 0; i < 50; i++) { result =
+		 * jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date); date =
+		 * date.minusDays(1); }
+		 * 
+		 * date = LocalDate.now(); for (int i = 0; i < 50; i++) { result =
+		 * jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), date); date =
+		 * date.minusDays(1); System.out.println(result); }
+		 */
+
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
-		//List<Quotation> max = readMaxValues(readCurrency(CurrencyTypes.EUR), 5);
-		//System.out.println(max);
-		
+		// List<Quotation> max = readMaxValues(readCurrency(CurrencyTypes.EUR), 5);
+		// System.out.println(max);
+
 		HibernateUtil.shutdown();
 
 		return;

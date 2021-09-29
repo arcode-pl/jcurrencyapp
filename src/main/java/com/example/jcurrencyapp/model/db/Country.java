@@ -13,12 +13,18 @@ import javax.persistence.*;
 @Table(name = "country")
 
 @NamedQueries({
-	//@NamedQuery(name = "Country.findAll", query = "SELECT u FROM Country ORDER BY u.countryName"),
-	//@NamedQuery(name = "Country.findByCountryName", query = "SELECT u FROM Country WHERE u.countryName = :countryName")
+	@NamedQuery(name = Country.FIND_ALL, query = "SELECT u FROM Country u ORDER BY u.countryName"),
+	@NamedQuery(name = Country.FIND_BY_COUNTRY_NAME, query = "SELECT u FROM Country u WHERE u.countryName = :" + Country.PARAM_COUNTRY_NAME)
 })
 
 public class Country {
 
+	public static final String FIND_ALL = "Country.findAll";
+	public static final String FIND_BY_COUNTRY_NAME = "Country.findByCountryName";
+	
+	public static final String PARAM_COUNTRY_NAME = "countryName";
+	
+	
 	private Long countryId;
 	private String countryName;
 	private Set<Currency> officialCurrencies = new HashSet<Currency>(0);
@@ -32,7 +38,7 @@ public class Country {
 	}
 	
 	@Id 
-	@GeneratedValue(strategy=GenerationType.IDENTITY)    
+	@GeneratedValue(strategy=GenerationType.SEQUENCE)    
 	@Column(name = "country_id")
 	public Long getCountryId() {
 		return countryId;

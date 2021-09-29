@@ -16,12 +16,14 @@ import javax.persistence.*;
 
 @NamedQueries({
 	@NamedQuery(name = Currency.FIND_ALL, query = "SELECT u FROM Currency u ORDER BY u.currencyCode"),
-	@NamedQuery(name = Currency.FIND_BY_CODE, query = "SELECT u FROM Currency u WHERE u.currencyCode = :currencyCode")
+	@NamedQuery(name = Currency.FIND_BY_CODE, query = "SELECT u FROM Currency u WHERE u.currencyCode = :" + Currency.PARAM_CURRENCY_CODE)
 })
 
 public class Currency {
 	public static final String FIND_ALL = "Currency.findAll";
 	public static final String FIND_BY_CODE = "Currency.findByCode";
+	
+	public static final String PARAM_CURRENCY_CODE = "currencyCode";
 	
 	private Long currencyId;
 

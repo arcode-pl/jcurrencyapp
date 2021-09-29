@@ -11,7 +11,8 @@
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">emar1</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
-        <property name="hibernate.implicit_naming_strategy">legacy-hbm</property>
+        <property name="hibernate.jdbc.batch_size">50</property>
+        <!-- <property name="hibernate.implicit_naming_strategy">legacy-hbm</property> -->
         <!-- <property name="hibernate.cache.use_second_level_cache">true</property>
         <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property> -->
         <property name="show_sql">true</property>

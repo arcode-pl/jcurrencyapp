@@ -27,8 +27,8 @@ public class DatabaseProviderImpl implements Provider {
 	public Currency readCurrency(CurrencyTypes code) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Currency.findByCode");
-		query.setParameter("currencyCode", code.toString());
+		Query query = session.getNamedQuery(Currency.FIND_BY_CODE);
+		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
 
 		return (Currency) query.getSingleResult();
 	}
@@ -37,8 +37,8 @@ public class DatabaseProviderImpl implements Provider {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
 		Query query = session.getNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
-		query.setParameter("date", date);
-		query.setParameter("currency", currency);
+		query.setParameter(Quotation.PARAM_DATE, date);
+		query.setParameter(Quotation.PARAM_CURRENCY, currency);
 
 		return (Quotation) query.getSingleResult();
 	}
@@ -47,10 +47,10 @@ public class DatabaseProviderImpl implements Provider {
 	public List<Quotation> readQuotation(Currency currency, LocalDate startDate, LocalDate endDate) {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 
-		Query query = session.getNamedQuery("Quotation.findByCodeAndDateRange");
-		query.setParameter("startDate", startDate);
-		query.setParameter("endDate", endDate);
-		query.setParameter("currency", currency);
+		Query query = session.getNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
+		query.setParameter(Quotation.PARAM_START_DATE, startDate);
+		query.setParameter(Quotation.PARAM_END_DATE, endDate);
+		query.setParameter(Quotation.PARAM_CURRENCY, currency);
 
 		return (List<Quotation>) query.getResultList();
 	}
@@ -72,7 +72,7 @@ public class DatabaseProviderImpl implements Provider {
 		try {
 			currency = this.readCurrency(rate.getCode());
 		} catch (NoResultException e) {
-			throw new DatabaseProviderException("Any currency in database for code=" + rate.getCode(), new Throwable());
+			throw new DatabaseProviderException("Any currency in database for code = " + rate.getCode(), new Throwable());
 		}
 
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -80,7 +80,6 @@ public class DatabaseProviderImpl implements Provider {
 
 		try {
 			tx = session.beginTransaction();
-
 			quotation = new Quotation(currency, rate.getDate(), rate.getRate());
 			session.save(quotation);
 			tx.commit();
@@ -101,7 +100,9 @@ public class DatabaseProviderImpl implements Provider {
 			quotations = this.readQuotation(this.readCurrency(code), startDate, endDate);
 			for (Quotation quotation : quotations) {
 				rates.add(
-						new Rate(quotation.getCurrency().getCurrencyCode(), quotation.getDate(), quotation.getRate()));
+						new Rate(quotation.getCurrency().getCurrencyCode(), 
+								quotation.getDate(), 
+								quotation.getRate()));
 			}
 
 		} catch (NoResultException e) {
