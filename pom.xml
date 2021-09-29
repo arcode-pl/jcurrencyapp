@@ -43,6 +43,14 @@
 			<version>5.5.7.Final</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-entitymanager -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>5.5.7.Final</version>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-ehcache -->
 		<dependency>
 			<groupId>org.hibernate</groupId>

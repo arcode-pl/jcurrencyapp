@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -25,18 +26,18 @@ import com.example.jcurrencyapp.model.db.Quotation;
 public class DatabaseProviderImpl implements Provider {
 
 	public Currency readCurrency(CurrencyTypes code) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
-		Query query = session.getNamedQuery(Currency.FIND_BY_CODE);
+		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
 		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
 
 		return (Currency) query.getSingleResult();
 	}
 
 	public Quotation readQuotation(Currency currency, LocalDate date) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
-		Query query = session.getNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
+		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
 		query.setParameter(Quotation.PARAM_DATE, date);
 		query.setParameter(Quotation.PARAM_CURRENCY, currency);
 
@@ -45,9 +46,9 @@ public class DatabaseProviderImpl implements Provider {
 
 	@SuppressWarnings("unchecked")
 	public List<Quotation> readQuotation(Currency currency, LocalDate startDate, LocalDate endDate) {
-		Session session = HibernateUtil.getSessionFactory().openSession();
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
-		Query query = session.getNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
+		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
 		query.setParameter(Quotation.PARAM_START_DATE, startDate);
 		query.setParameter(Quotation.PARAM_END_DATE, endDate);
 		query.setParameter(Quotation.PARAM_CURRENCY, currency);
@@ -75,7 +76,8 @@ public class DatabaseProviderImpl implements Provider {
 			throw new DatabaseProviderException("Any currency in database for code = " + rate.getCode(), new Throwable());
 		}
 
-		Session session = HibernateUtil.getSessionFactory().openSession();
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
 
 		try {

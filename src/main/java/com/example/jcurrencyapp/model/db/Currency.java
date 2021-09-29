@@ -1,15 +1,23 @@
 package com.example.jcurrencyapp.model.db;
 
-import com.example.jcurrencyapp.model.CurrencyTypes;
-
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import com.example.jcurrencyapp.model.CurrencyTypes;
 
 @Entity
 @Table(name = "currency")
@@ -60,11 +68,11 @@ public class Currency {
 	}
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
-	public Set<Country> getCountries() {
+	public Set<Country> getSupportedCountries() {
 		return supportedCountries;
 	}
 	
-	public void setCountries(Set<Country> supportedCountries) {
+	public void setSupportedCountries(Set<Country> supportedCountries) {
 		this.supportedCountries = supportedCountries;
 	}
 	

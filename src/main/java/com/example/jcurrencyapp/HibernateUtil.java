@@ -1,25 +1,17 @@
 package com.example.jcurrencyapp;
 
-import java.util.List;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
-
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.cfg.Configuration;
-import com.example.jcurrencyapp.model.db.*;
 
 public class HibernateUtil {
-	private static final SessionFactory sessionFactory = buildSessionFactory();
-
-	private static SessionFactory buildSessionFactory() {
+	private static final EntityManagerFactory entityManagerFactory = buildEntityManagerFactory();
+	
+	private static EntityManagerFactory buildEntityManagerFactory() {
 		try {
-			// Create the SessionFactory from hibernate.cfg.xml
-			return new Configuration().configure().buildSessionFactory();
+			// Create the SessionFactory from persistance.xml
+			return Persistence.createEntityManagerFactory("jcurrency-persistance-unit");
+			//Configuration().configure().buildSessionFactory();
 		} catch (Throwable ex) {
 			// Make sure you log the exception, as it might be swallowed
 			System.err.println("SessionFactory creation failed." + ex);
@@ -27,16 +19,16 @@ public class HibernateUtil {
 		}
 	}
 
-	public static SessionFactory getSessionFactory() {
-		return sessionFactory;
+	public static EntityManagerFactory getEntityManagerFactory() {
+		return entityManagerFactory;
 	}
 
 	public static void shutdown() {
 		// Close caches and connection pools
-		getSessionFactory().close();
+		getEntityManagerFactory().close();
 	}
 
-	public static List<Currency> findAllCurrnciesWithCriteriaQuery() {
+	/*public static List<Currency> findAllCurrnciesWithCriteriaQuery() {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		Transaction tx = null;
 		List<Currency> currencies = null;
@@ -63,5 +55,5 @@ public class HibernateUtil {
 		}
 		
 		return currencies;
-	}
+	}*/
 }
