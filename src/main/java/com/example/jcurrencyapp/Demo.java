@@ -29,9 +29,7 @@ import com.example.jcurrencyapp.model.db.Currency;
 import com.example.jcurrencyapp.model.db.Quotation;
 
 public class Demo {
-
-	public static final int BATCH_SIZE = 50;
-
+	
 	public static void initCurrencies() {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
@@ -44,8 +42,7 @@ public class Demo {
 			for (CurrencyTypes val : CurrencyTypes.values()) {
 				Currency currency = new Currency(val);
 				session.persist(currency);
-				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
-					// flush a batch of inserts and release memory:
+				if (++i % Config.BATCH_SIZE == 0) {
 					session.flush();
 					session.clear();
 				}
@@ -74,8 +71,7 @@ public class Demo {
 			for (String val : Locale.getISOCountries()) {
 				Country country = new Country(val);
 				session.persist(country);
-				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
-					// flush a batch of inserts and release memory:
+				if (++i % Config.BATCH_SIZE == 0) {
 					session.flush();
 					session.clear();
 				}
