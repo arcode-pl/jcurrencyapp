@@ -5,12 +5,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.converter.IConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpJsonConverter;
-import com.example.jcurrencyapp.data.converter.impl.NbpXmlConverter;
-import com.example.jcurrencyapp.data.provider.IProvider;
-import com.example.jcurrencyapp.data.provider.impl.NbpJsonProvider;
-import com.example.jcurrencyapp.data.provider.impl.NbpXmlProvider;
+import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -19,22 +15,17 @@ import com.example.jcurrencyapp.model.Rate;
  *
  */
 public class Controller {
-	private List<IProvider> providers;
+	private List<Provider> providers;
 	private Config config;
-	private Cache cache;
-	
+
 	public Controller() {
-		this.providers = Arrays.asList(
-				new NbpJsonProvider(new NbpJsonConverter()),
-				new NbpXmlProvider(new NbpXmlConverter()));
+		this.providers = Arrays.asList(new NbpJsonProviderImpl());
 		this.config = new Config();
-		this.cache = new Cache();
 	}
 
-	public Controller(List<IProvider> providers) {
+	public Controller(List<Provider> providers) {
 		this.providers = providers;
 		this.config = new Config();
-		this.cache = new Cache();
 	}
 
 	public Config getConfig() {
@@ -44,51 +35,42 @@ public class Controller {
 	public void setConfig(Config config) {
 		this.config = config;
 	}
-	
-	public Controller clearCache() {
-		this.cache.clear();
-		
-		return this;
-	}
-	
+
 	public Rate getRate(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
-		int retryCnt = 0;
-		String raw;
-		IConverter converter;
-		
-		// Loop through days
-		while (retryCnt <= config.getMaxBackDays()) {
+		int backDaysCounter = 0;
 
-			// Firstly try return cache value if used and not forced read
-			if (config.isUseCache() && !config.isForceRead()) {
-				rate = cache.getRate(code, date);
-				if (rate != null) { // Return from cache if valid
-					return new Rate(rate, date);
-				}
-			}
-			
-			// Loop through providers to get rate from wanted day
-			for (IProvider provider : providers) {
-				raw = provider.getData(code, date);
-				converter = provider.getConverter();
-				
-				rate = converter.getRate(raw);
+		while (backDaysCounter <= config.getMaxBackDays()) {
+
+			for (Provider provider : providers) {
+				rate = provider.getRate(code, date);
 				if (rate != null) {
-					// Update cache if is used
-					if (config.isUseCache()) {
-						cache.putRate(code, date, rate);
-					}
-					
-					return new Rate(rate, date);
+					Rate result = new Rate(code, date, rate);
+
+					providers.stream().filter(p -> providers.indexOf(p) < providers.indexOf(provider))
+							.forEach(p -> p.saveRate(result));
+
+//					int currentProviderIdx = providers.indexOf(provider);
+//					for (int i = 0 ; i < currentProviderIdx; i++) {
+//						providers.get(i).saveRate(result);
+//					}
+
+					return result;
 				}
 			}
-			
-			// Try get rate from previous day until max back days reached
+
 			date = date.minusDays(1);
-			retryCnt++;
+			backDaysCounter++;
 		}
+
+		return null;
+	}
+
+	public void updateRates(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+		List<Rate> rates = provider.getRates(code, startDate, endDate);
 		
-		return null; //Can't get rate
+		for (Provider current : providers) {
+			current.saveRates(rates);
+		}
 	}
 }

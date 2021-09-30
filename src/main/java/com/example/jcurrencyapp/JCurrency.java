@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.provider.IProvider;
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.exceptions.ExceptionHandler;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
@@ -13,39 +13,41 @@ import com.example.jcurrencyapp.model.Rate;
 public class JCurrency {
 
 	private Validator validator;
-	private Controller ctrl;
+	private Controller controller;
 
 	public JCurrency() {
 		this.validator = new Validator();
-		this.ctrl = new Controller();
+		this.controller = new Controller();
 	}
 
-	public JCurrency(List<IProvider> providers) {
+	public JCurrency(List<Provider> providers) {
 		this.validator = new Validator();
-		this.ctrl = new Controller(providers);
+		this.controller = new Controller(providers);
 	}
 
 	public Config getConfig() {
-		return this.ctrl.getConfig();
+		return this.controller.getConfig();
 	}
 
 	public void setConfig(Config config) {
-		this.ctrl.setConfig(config);
+		this.controller.setConfig(config);
 	}
-	
-	//clear cache? force read?
 
-	public Optional<Rate> exchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
-
+	public Optional<Rate> tryExchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
+		Optional<Rate> result = Optional.empty();
+		
 		try {
 			validator.validateInputs(code, quantity);
-			Rate rate = ctrl.getRate(code, validator.fixDate(date));
-			rate.setRate(quantity.multiply(rate.getRate()));
-			return Optional.of(rate);
+			Rate rate = controller.getRate(code, validator.fixDate(date));
+			result = Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}
-
-		return Optional.empty();
+		
+		return result;
+	}
+	
+	public void updateRatesFromProvider(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+			controller.updateRates(provider, code, startDate, endDate);
 	}
 }
