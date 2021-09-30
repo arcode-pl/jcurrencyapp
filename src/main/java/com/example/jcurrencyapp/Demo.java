@@ -2,13 +2,10 @@ package com.example.jcurrencyapp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
