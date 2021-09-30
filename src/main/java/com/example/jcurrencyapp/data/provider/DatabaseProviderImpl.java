@@ -3,14 +3,11 @@ package com.example.jcurrencyapp.data.provider;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -19,7 +16,6 @@ import com.example.jcurrencyapp.HibernateUtil;
 import com.example.jcurrencyapp.exceptions.DatabaseProviderException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
-import com.example.jcurrencyapp.model.db.Country;
 import com.example.jcurrencyapp.model.db.Currency;
 import com.example.jcurrencyapp.model.db.Quotation;
 
@@ -83,13 +79,15 @@ public class DatabaseProviderImpl implements Provider {
 		try {
 			tx = session.beginTransaction();
 			quotation = new Quotation(currency, rate.getDate(), rate.getRate());
-			session.save(quotation);
+			session.persist(quotation);
 			tx.commit();
 			currency.addQuotation(quotation);
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
 			}
+		} finally {
+			session.close();
 		}
 	}
 

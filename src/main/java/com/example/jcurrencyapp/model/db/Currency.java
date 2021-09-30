@@ -19,24 +19,32 @@ import javax.persistence.Table;
 
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
-@Entity
-@Table(name = "currency")
-
 @NamedQueries({
 	@NamedQuery(name = Currency.FIND_ALL, query = "SELECT u FROM Currency u ORDER BY u.currencyCode"),
 	@NamedQuery(name = Currency.FIND_BY_CODE, query = "SELECT u FROM Currency u WHERE u.currencyCode = :" + Currency.PARAM_CURRENCY_CODE)
 })
 
+@Entity
+@Table(name = "currency")
 public class Currency {
+	
 	public static final String FIND_ALL = "Currency.findAll";
 	public static final String FIND_BY_CODE = "Currency.findByCode";
 	
 	public static final String PARAM_CURRENCY_CODE = "currencyCode";
 	
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "currency_id")
 	private Long currencyId;
-
+	
+	@Column(name = "currency_code", unique = true, nullable = false)
 	private String currencyCode;
-	private Set<Country> supportedCountries = new HashSet<Country>(0);
+	
+	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
+	private Set<Country> supportedCountries = new HashSet<Country>();
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
     private List<Quotation> quotations = new ArrayList<Quotation>();
 	
 	public Currency() {
@@ -47,9 +55,6 @@ public class Currency {
 		this.setCurrencyCode(code.toString());
 	}
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "currency_id")
 	public Long getCurrencyId() {
 		return currencyId;
 	}
@@ -58,7 +63,6 @@ public class Currency {
 		this.currencyId = currencyId;
 	}
 
-	@Column(name = "currency_code", unique = true, nullable = false)
 	public String getCurrencyCode() {
 		return currencyCode;
 	}
@@ -67,7 +71,6 @@ public class Currency {
 		this.currencyCode = currencyCode;
 	}
 	
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
 	public Set<Country> getSupportedCountries() {
 		return supportedCountries;
 	}
@@ -76,7 +79,6 @@ public class Currency {
 		this.supportedCountries = supportedCountries;
 	}
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
 	public List<Quotation> getQuotations() {
 		return quotations;
 	}

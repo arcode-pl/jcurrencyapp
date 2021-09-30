@@ -43,7 +43,7 @@ public class Demo {
 			int i = 0;
 			for (CurrencyTypes val : CurrencyTypes.values()) {
 				Currency currency = new Currency(val);
-				session.save(currency);
+				session.persist(currency);
 				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
 					// flush a batch of inserts and release memory:
 					session.flush();
@@ -73,7 +73,7 @@ public class Demo {
 			int i = 0;
 			for (String val : Locale.getISOCountries()) {
 				Country country = new Country(val);
-				session.save(country);
+				session.persist(country);
 				if (i++ % BATCH_SIZE == 0) { // Same as the JDBC batch size
 					// flush a batch of inserts and release memory:
 					session.flush();

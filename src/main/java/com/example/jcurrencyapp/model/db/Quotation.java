@@ -14,9 +14,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "quotation")
-
 @NamedQueries({
 		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
 				+ Quotation.PARAM_CURRENCY + " AND u.date = :" + Quotation.PARAM_DATE),
@@ -28,6 +25,8 @@ import javax.persistence.Table;
 		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
 				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate DESC") })
 
+@Entity
+@Table(name = "quotation")
 public class Quotation {
 
 	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
@@ -40,9 +39,18 @@ public class Quotation {
 	public static final String PARAM_END_DATE = "endDate";
 	public static final String PARAM_CURRENCY = "currency";
 
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@Column(name = "quotation_id")
 	private Long quotationId;
+	
+	@ManyToOne
+	@JoinColumn(name = "currency_id")
 	private Currency currency;
+	
 	LocalDate date;
+	
+	@Column(precision = 8, scale = 4)
 	private BigDecimal rate;
 
 	public Quotation() {
@@ -56,9 +64,6 @@ public class Quotation {
 		this.rate = rate;
 	}
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "quotation_id")
 	public Long getQuotationId() {
 		return quotationId;
 	}
@@ -67,8 +72,6 @@ public class Quotation {
 		this.quotationId = quotationId;
 	}
 
-	@ManyToOne
-	@JoinColumn(name = "currency_id")
 	public Currency getCurrency() {
 		return currency;
 	}
@@ -85,7 +88,6 @@ public class Quotation {
 		this.date = date;
 	}
 
-	@Column(name = "rate", precision = 8, scale = 4)
 	public BigDecimal getRate() {
 		return rate;
 	}
