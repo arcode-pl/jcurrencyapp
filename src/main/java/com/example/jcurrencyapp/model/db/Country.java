@@ -12,6 +12,8 @@ import javax.persistence.*;
 	@NamedQuery(name = Country.FIND_BY_COUNTRY_NAME, query = "SELECT u FROM Country u WHERE u.countryName = :" + Country.PARAM_COUNTRY_NAME)
 })
 
+@NamedNativeQuery(name = Country.FIND_BY_COUNTRY_NAME_NATIVE, query = "SELECT * FROM country WHERE country_name = ?", resultClass = Country.class)
+
 @Entity
 //@Cacheable
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -21,6 +23,7 @@ public class Country {
 
 	public static final String FIND_ALL = "Country.findAll";
 	public static final String FIND_BY_COUNTRY_NAME = "Country.findByCountryName";
+	public static final String FIND_BY_COUNTRY_NAME_NATIVE = "Country.findByCountryNameNative";
 	
 	public static final String PARAM_COUNTRY_NAME = "countryName";
 	

@@ -44,8 +44,8 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 
 		List<Rate> rates = new ArrayList<Rate>();
 		
-		if (startDate.isBefore(NbpParams.startDate)) {
-			startDate = NbpParams.startDate;
+		if (startDate.isBefore(NbpParams.START_DATE)) {
+			startDate = NbpParams.START_DATE;
 		}
 
 		// Get full tables NbpAPI - limitation: max one year date range per call, minimal date is 2002 year, max is today

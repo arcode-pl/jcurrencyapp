@@ -109,6 +109,16 @@ public class Demo {
 
 		return (List<Quotation>) query.getResultList();
 	}
+	
+	@SuppressWarnings("unchecked")
+	public static List<Country> getCountryFromDatabase(String name) {
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
+		Query q = em.createNamedQuery(Country.FIND_BY_COUNTRY_NAME_NATIVE);
+		q.setParameter(1, name);
+
+		return (List<Country>) q.getResultList();
+	}
 
 	@SuppressWarnings("unchecked")
 	public static List<Quotation> readMinValues(Currency currency, int limit) {
@@ -142,9 +152,13 @@ public class Demo {
 		for (Quotation var : readMaxValues(readCurrency(CurrencyTypes.EUR), 5)) {
 			System.out.println(var);
 		}
+		
 		for (Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
 			System.out.println(var);
 		}
+		
+		// EXAMPLE WITH NAMED NATIVE QUERY
+		System.out.println(getCountryFromDatabase("PL"));
 		
 		// TRY EXCHANGE EUR (FROM DATABASE)
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));

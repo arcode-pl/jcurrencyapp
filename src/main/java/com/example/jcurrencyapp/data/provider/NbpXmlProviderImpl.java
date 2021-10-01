@@ -44,8 +44,8 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 		List<Rate> rates = new ArrayList<Rate>();
 
-		if (startDate.isBefore(NbpParams.startDate)) {
-			startDate = NbpParams.startDate;
+		if (startDate.isBefore(NbpParams.START_DATE)) {
+			startDate = NbpParams.START_DATE;
 		}
 
 		// Get full tables NbpAPI - limitation: max one year date range per call,

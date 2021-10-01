@@ -74,7 +74,7 @@ public class DatabaseProviderImpl implements Provider {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Quotation> readQuotation(Currency currency, LocalDate startDate, LocalDate endDate) {
+	public List<Quotation> readQuotations(Currency currency, LocalDate startDate, LocalDate endDate) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
@@ -96,6 +96,8 @@ public class DatabaseProviderImpl implements Provider {
 		}
 	}
 	
+	/* PROVIDER SECTION */
+	
 	@Override
 	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
 		try {
@@ -116,7 +118,7 @@ public class DatabaseProviderImpl implements Provider {
 		List<Rate> rates = new ArrayList<Rate>();
 
 		try {
-			quotations = this.readQuotation(this.readCurrency(code), startDate, endDate);
+			quotations = this.readQuotations(this.readCurrency(code), startDate, endDate);
 			for (Quotation quotation : quotations) {
 				rates.add(
 						new Rate(quotation.getCurrency().getCurrencyCode(), 
