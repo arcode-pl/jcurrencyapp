@@ -16,11 +16,12 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/jcurrency" />
             <property name="javax.persistence.jdbc.user" value="postgres" />
             <property name="javax.persistence.jdbc.password" value="emar1" />
+            <!-- <property name="javax.persistence.schema-generation.database.action" value="drop-and-create"></property> -->
             
 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
-			<property name="hibernate.show_sql" value="true" />
-			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
             <property name="hibernate.hbm2ddl.auto" value="create" />
 			<property name="hibernate.archive.autodetection" value ="class, hbm" />
 			<property name="hibernate.generate_statistics" value="true" />

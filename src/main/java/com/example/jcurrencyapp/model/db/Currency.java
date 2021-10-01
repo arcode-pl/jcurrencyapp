@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,7 +26,8 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 })
 
 @Entity
-@Table(name = "currency")
+@Table(name = "currency", indexes = 
+	@Index(name = "currency_index", columnList = "currency_code", unique = true) )
 public class Currency {
 	
 	public static final String FIND_ALL = "Currency.findAll";
@@ -38,7 +40,7 @@ public class Currency {
 	@Column(name = "currency_id")
 	private Long currencyId;
 	
-	@Column(name = "currency_code", unique = true, nullable = false)
+	@Column(name = "currency_code", nullable = false)
 	private String currencyCode;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")

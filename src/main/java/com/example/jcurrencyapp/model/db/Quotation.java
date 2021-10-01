@@ -5,9 +5,11 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -26,7 +28,8 @@ import javax.persistence.Table;
 				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate DESC") })
 
 @Entity
-@Table(name = "quotation")
+@Table(name = "quotation", indexes = 
+	@Index(name = "quotation_index", columnList = "date, rate", unique = true) )
 public class Quotation {
 
 	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
@@ -45,7 +48,7 @@ public class Quotation {
 	private Long quotationId;
 	
 	@ManyToOne
-	@JoinColumn(name = "currency_id")
+	@JoinColumn(name = "currency_id", foreignKey = @ForeignKey(name = "quotation_currency_fk"))
 	private Currency currency;
 	
 	LocalDate date;

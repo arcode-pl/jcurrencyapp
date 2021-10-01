@@ -15,7 +15,8 @@ import javax.persistence.*;
 @Entity
 //@Cacheable
 //@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Table(name = "country")
+@Table(name = "country", indexes = 
+	@Index(name = "country_index", columnList = "country_name", unique = true) )
 public class Country {
 
 	public static final String FIND_ALL = "Country.findAll";
@@ -28,13 +29,13 @@ public class Country {
 	@Column(name = "country_id")
 	private Long countryId;
 	
-	@Column(name = "country_name", unique = true, nullable = false)
+	@Column(name = "country_name", nullable = false)
 	private String countryName;
 	
 	@ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinTable(name = "country_currency", 
-		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false) }, 
-		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false) })
+		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "country_currency_fk")) }, 
+		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "currency_country_fk")) })
 	private Set<Currency> officialCurrencies = new HashSet<Currency>();
 
 	public Country() {
