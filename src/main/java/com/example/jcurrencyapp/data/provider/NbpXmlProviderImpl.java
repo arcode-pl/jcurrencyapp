@@ -35,8 +35,7 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 	@Override
 	public void saveRate(Rate rate) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 
 	@Override
@@ -70,8 +69,7 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 	@Override
 	public void saveRates(List<Rate> rates) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 
 }

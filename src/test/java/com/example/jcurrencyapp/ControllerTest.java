@@ -48,14 +48,12 @@ public class ControllerTest {
 
 		@Override
 		public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void saveRates(List<Rate> rates) {
-			// TODO Auto-generated method stub
-			
+			// Intentionally left empty
 		}
 	}
 
