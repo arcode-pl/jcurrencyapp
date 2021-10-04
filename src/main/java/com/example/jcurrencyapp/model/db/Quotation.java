@@ -53,7 +53,7 @@ public class Quotation {
 	
 	LocalDate date;
 	
-	@Column(precision = 8, scale = 4)
+	@Column(precision = 16, scale = 8)
 	private BigDecimal rate;
 
 	public Quotation() {

@@ -3,6 +3,8 @@ package com.example.jcurrencyapp;
 public class Config {
 	public static final int MAX_BACK_DAYS = 365;
 	public static final int BATCH_SIZE = 50;
+	public static final int RATE_PRECISION = 16;
+	public static final int RATE_SCALE = 8;
 	private int maxBackDays;
 	private boolean useCache;
 	private boolean forceRead;

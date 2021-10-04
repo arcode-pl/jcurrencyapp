@@ -23,7 +23,7 @@ import com.example.jcurrencyapp.model.db.Quotation;
 
 public class DatabaseProviderImpl implements Provider {
 
-	public Currency readCurrency(CurrencyTypes code) {
+	private Currency readCurrency(CurrencyTypes code) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
@@ -32,7 +32,7 @@ public class DatabaseProviderImpl implements Provider {
 		return (Currency) query.getSingleResult();
 	}
 
-	public Quotation readQuotation(Currency currency, LocalDate date) {
+	private Quotation readQuotation(Currency currency, LocalDate date) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
@@ -42,7 +42,7 @@ public class DatabaseProviderImpl implements Provider {
 		return (Quotation) query.getSingleResult();
 	}
 	
-	public void saveQuotations(List<Quotation> quotations) {
+	private void saveQuotations(List<Quotation> quotations) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
@@ -74,7 +74,7 @@ public class DatabaseProviderImpl implements Provider {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Quotation> readQuotations(Currency currency, LocalDate startDate, LocalDate endDate) {
+	private List<Quotation> readQuotations(Currency currency, LocalDate startDate, LocalDate endDate) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
@@ -85,7 +85,7 @@ public class DatabaseProviderImpl implements Provider {
 		return (List<Quotation>) query.getResultList();
 	}
 
-	public Quotation toQuotation(Rate rate) {
+	private Quotation toQuotation(Rate rate) {
 		Currency currency;
 
 		try {
