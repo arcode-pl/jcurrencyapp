@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.database;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -15,16 +15,21 @@ import org.hibernate.Transaction;
 
 import com.example.jcurrencyapp.Config;
 import com.example.jcurrencyapp.HibernateUtil;
+import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.database.model.Currency;
+import com.example.jcurrencyapp.data.provider.database.model.Quotation;
 import com.example.jcurrencyapp.exceptions.DatabaseProviderException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
-import com.example.jcurrencyapp.model.db.Currency;
-import com.example.jcurrencyapp.model.db.Quotation;
 
 public class DatabaseProviderImpl implements Provider {
 
 	private Currency readCurrency(CurrencyTypes code) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+		// TODO: is this correct approach?
+		if (!em.isJoinedToTransaction()) {
+			em.joinTransaction();
+		}
 
 		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
 		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
@@ -34,6 +39,10 @@ public class DatabaseProviderImpl implements Provider {
 
 	private Quotation readQuotation(Currency currency, LocalDate date) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+		// TODO: is this correct approach?
+		if (!em.isJoinedToTransaction()) {
+			em.joinTransaction();
+		}
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
 		query.setParameter(Quotation.PARAM_DATE, date);
@@ -41,7 +50,7 @@ public class DatabaseProviderImpl implements Provider {
 
 		return (Quotation) query.getSingleResult();
 	}
-	
+
 	private void saveQuotations(List<Quotation> quotations) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
@@ -49,8 +58,8 @@ public class DatabaseProviderImpl implements Provider {
 
 		try {
 			tx = session.beginTransaction();
-			
-			int i=0;
+
+			int i = 0;
 			for (Quotation quotation : quotations) {
 				session.persist(quotation);
 				if (++i % Config.BATCH_SIZE == 0) {
@@ -59,11 +68,11 @@ public class DatabaseProviderImpl implements Provider {
 				}
 			}
 			tx.commit();
-			
+
 			// Synchronize persisted object, please check how it works
-			for (Quotation quotation : quotations) {
-				quotation.getCurrency().addQuotation(quotation);
-			}
+//			for (Quotation quotation : quotations) {
+//				quotation.getCurrency().addQuotation(quotation);
+//			}
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
@@ -95,9 +104,9 @@ public class DatabaseProviderImpl implements Provider {
 			throw new DatabaseProviderException("Issue in toQuotation", new Throwable());
 		}
 	}
-	
+
 	/* PROVIDER SECTION */
-	
+
 	@Override
 	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
 		try {
@@ -121,9 +130,7 @@ public class DatabaseProviderImpl implements Provider {
 			quotations = this.readQuotations(this.readCurrency(code), startDate, endDate);
 			for (Quotation quotation : quotations) {
 				rates.add(
-						new Rate(quotation.getCurrency().getCurrencyCode(), 
-								quotation.getDate(), 
-								quotation.getRate()));
+						new Rate(quotation.getCurrency().getCurrencyCode(), quotation.getDate(), quotation.getRate()));
 			}
 
 		} catch (NoResultException e) {

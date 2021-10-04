@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.converter.nbp;
+package com.example.jcurrencyapp.data.provider.nbp;
 
 import java.time.LocalDate;
 

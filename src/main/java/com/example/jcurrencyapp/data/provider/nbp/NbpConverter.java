@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.converter;
+package com.example.jcurrencyapp.data.provider.nbp;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.List;
 import com.example.jcurrencyapp.model.Rate;
 
 //Returns currency rate selected by code and value
-public interface Converter {
+public interface NbpConverter {
 	public BigDecimal getRate(String data);
 	public List<Rate> getRates(String data);
 }

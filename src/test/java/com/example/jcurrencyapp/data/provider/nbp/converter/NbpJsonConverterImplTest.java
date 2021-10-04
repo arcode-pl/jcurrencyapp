@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.converter.nbp;
+package com.example.jcurrencyapp.data.provider.nbp.converter;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.example.jcurrencyapp.data.provider.nbp.converter.NbpJsonConverterImpl;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpJsonConverterImplTest {

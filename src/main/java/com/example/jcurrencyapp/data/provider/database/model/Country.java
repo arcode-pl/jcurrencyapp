@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.model.db;
+package com.example.jcurrencyapp.data.provider.database.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,6 +6,10 @@ import java.util.Set;
 //import org.hibernate.annotations.Cache;
 //import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
+
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @NamedQueries({
 	@NamedQuery(name = Country.FIND_ALL, query = "SELECT u FROM Country u ORDER BY u.countryName"),
@@ -39,6 +43,8 @@ public class Country {
 	@JoinTable(name = "country_currency", 
 		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "country_currency_fk")) }, 
 		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "currency_country_fk")) })
+	@Fetch(FetchMode.JOIN)
+	@BatchSize(size = 25)
 	private Set<Currency> officialCurrencies = new HashSet<Currency>();
 
 	public Country() {

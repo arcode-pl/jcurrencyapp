@@ -5,8 +5,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -49,11 +49,6 @@ public class Controller {
 
 					providers.stream().filter(p -> providers.indexOf(p) < providers.indexOf(provider))
 							.forEach(p -> p.saveRate(result));
-
-//					int currentProviderIdx = providers.indexOf(provider);
-//					for (int i = 0 ; i < currentProviderIdx; i++) {
-//						providers.get(i).saveRate(result);
-//					}
 
 					return result;
 				}

@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.nbp;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.math.BigDecimal;
@@ -10,27 +10,27 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.BaseTest;
+import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
-public class NbpJsonProviderImplTest extends BaseTest{
+public class NbpXmlProviderImplTest extends BaseTest{
 
 	@BeforeClass
 	public void setUp() {
 		System.out.println("Testing: " + this.getClass().getName());
 	}
-	
+
 	@Mock 
-	NbpJsonProviderImpl mockNbpJsonProvider;
+	NbpXmlProviderImpl mockNbpXmlProvider;
 	
 	@Test
-	public void shouldGiveValidResponse_WhenHappyPathForJson() {
+	public void shouldGiveValidResponse_WhenHappyPathForXml() {
 		// Given
 		BigDecimal validResult = new BigDecimal("3.7695");
-		LocalDate date = LocalDate.of(2016, 4, 12);
-		Mockito.when(mockNbpJsonProvider.getRate(CurrencyTypes.USD, date)).thenReturn(new BigDecimal("3.7695"));
+		Mockito.when(mockNbpXmlProvider.getRate(CurrencyTypes.USD, LocalDate.of(2016, 4, 12))).thenReturn(new BigDecimal("3.7695"));
 		
 		// When
-		BigDecimal result = mockNbpJsonProvider.getRate(CurrencyTypes.USD, date);
+		BigDecimal result = mockNbpXmlProvider.getRate(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));
 		
 		// Then
 		assertThat(result).isEqualTo(validResult);

@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.database;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.Config;
 import com.example.jcurrencyapp.Demo;
+import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -26,9 +27,14 @@ public class DatabaseProviderImplTest {
 		// I think that this need to be implemented in SQL initialization script of
 		// database or hard-coded in source for currency and country code.
 		// Load country and currency codes to database.
-		Demo.initTables();
+		Demo.initCurrencies();
 	}
 
+	@Test //data provider / data source
+	public void shouldTestPrecisionAndScale() {
+		
+	}
+	
 	@Test
 	public void shouldSaveRate_And_GetRate() {
 		// given
@@ -38,7 +44,7 @@ public class DatabaseProviderImplTest {
 		BigDecimal rate = new BigDecimal(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_UP);
 		Rate input = new Rate(code, date, rate);
 
-		// when
+		// when save & get
 		provider.saveRate(input);
 		BigDecimal result = provider.getRate(code, date);
 
@@ -55,7 +61,7 @@ public class DatabaseProviderImplTest {
 		LocalDate endDate = LocalDate.of(2016, 7, 20);
 		List<Rate> inputRates = new ArrayList<Rate>();
 
-		// when
+		// when save and get
 		LocalDate tmpDate = startDate;
 		while (tmpDate.isBefore(endDate)) {
 			inputRates.add(new Rate(code, tmpDate,

@@ -1,8 +1,6 @@
-package com.example.jcurrencyapp.model.db;
+package com.example.jcurrencyapp.data.provider.database.model;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,8 +13,10 @@ import javax.persistence.Index;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
@@ -44,10 +44,11 @@ public class Currency {
 	private String currencyCode;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
+	@Fetch(FetchMode.JOIN)
 	private Set<Country> supportedCountries = new HashSet<Country>();
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
-    private List<Quotation> quotations = new ArrayList<Quotation>();
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
+//    private List<Quotation> quotations = new ArrayList<Quotation>();
 	
 	public Currency() {
 		super();
@@ -81,18 +82,18 @@ public class Currency {
 		this.supportedCountries = supportedCountries;
 	}
 	
-	public List<Quotation> getQuotations() {
-		return quotations;
-	}
-
-	public void setQuotations(List<Quotation> quotations) {
-		this.quotations = quotations;
-	}
+//	public List<Quotation> getQuotations() {
+//		return quotations;
+//	}
+//
+//	public void setQuotations(List<Quotation> quotations) {
+//		this.quotations = quotations;
+//	}
 	
-	public void addQuotation(Quotation quotation) {
-        this.quotations.add(quotation);
-        quotation.setCurrency(this);
-    }
+//	public void addQuotation(Quotation quotation) {
+//        this.quotations.add(quotation);
+//        quotation.setCurrency(this);
+//    }
 	
 	@Override
 	public String toString() {

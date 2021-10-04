@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.model.db;
+package com.example.jcurrencyapp.data.provider.database.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -23,7 +23,7 @@ import javax.persistence.Table;
 				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
 				+ Quotation.PARAM_END_DATE),
 		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate"),
+				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate "),
 		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
 				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate DESC") })
 

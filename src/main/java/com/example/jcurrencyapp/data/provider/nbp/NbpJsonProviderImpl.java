@@ -1,13 +1,12 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.nbp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.converter.Converter;
-import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
-import com.example.jcurrencyapp.data.converter.nbp.NbpParams;
+import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.nbp.converter.NbpJsonConverterImpl;
 import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
 import com.example.jcurrencyapp.io.webapi.WebApiController;
 import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
@@ -16,7 +15,7 @@ import com.example.jcurrencyapp.model.Rate;
 
 public class NbpJsonProviderImpl implements Provider { // is implements need here?
 
-	Converter converter;
+	NbpConverter converter;
 
 	public NbpJsonProviderImpl() {
 		this.converter = new NbpJsonConverterImpl();

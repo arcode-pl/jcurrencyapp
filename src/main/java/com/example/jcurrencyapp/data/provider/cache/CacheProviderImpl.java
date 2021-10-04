@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.cache;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 

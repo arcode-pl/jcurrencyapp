@@ -14,16 +14,16 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
-import com.example.jcurrencyapp.data.provider.CacheProviderImpl;
-import com.example.jcurrencyapp.data.provider.DatabaseProviderImpl;
-import com.example.jcurrencyapp.data.provider.NbpJsonProviderImpl;
-import com.example.jcurrencyapp.data.provider.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.cache.CacheProviderImpl;
+import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
+import com.example.jcurrencyapp.data.provider.database.model.Country;
+import com.example.jcurrencyapp.data.provider.database.model.Currency;
+import com.example.jcurrencyapp.data.provider.database.model.Quotation;
+import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
+import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
-import com.example.jcurrencyapp.model.db.Country;
-import com.example.jcurrencyapp.model.db.Currency;
-import com.example.jcurrencyapp.model.db.Quotation;
 
 public class Demo {
 	
@@ -85,9 +85,17 @@ public class Demo {
 		}
 	}
 
+	public static void initQuotations() {
+		for (CurrencyTypes val : CurrencyTypes.values()) {
+			List<Rate> rates = new NbpJsonProviderImpl().getRates(val, LocalDate.of(2002, 1, 1), LocalDate.now());
+			new DatabaseProviderImpl().saveRates(rates);
+		}
+	}
+	
 	public static void initTables() {
 		initCurrencies();
 		initCountries();
+		initQuotations();
 	}
 
 	public static Currency readCurrency(CurrencyTypes code) {
@@ -140,38 +148,24 @@ public class Demo {
 		Optional<Rate> result;
 
 		// INIT WITH PROVIDERS
-		List<Provider> providers = Arrays.asList(new DatabaseProviderImpl(), new CacheProviderImpl(),
+		List<Provider> providers = Arrays.asList(new CacheProviderImpl(), new DatabaseProviderImpl(),
 				new NbpJsonProviderImpl(), new NbpXmlProviderImpl());
 		JCurrency jcurrency = new JCurrency(providers);
-
-		// LOAD 19 YEARS FROM NBP
-		jcurrency.updateRatesFromProvider(new NbpJsonProviderImpl(), CurrencyTypes.EUR, LocalDate.of(2002, 1, 1),
-				LocalDate.now());
-
-		// FIND BEST RATE FOR EUR + / -
-		for (Quotation var : readMaxValues(readCurrency(CurrencyTypes.EUR), 5)) {
-			System.out.println(var);
-		}
 		
-		for (Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
-			System.out.println(var);
-		}
+//		for (Quotation var : readMaxValues(readCurrency(CurrencyTypes.EUR), 5)) {
+//			System.out.println(var);
+//		}
+//		
+//		for (Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
+//			System.out.println(var);
+//		}
 		
-		// EXAMPLE WITH NAMED NATIVE QUERY
-		System.out.println(getCountryFromDatabase("PL"));
-		
-		// TRY EXCHANGE EUR (FROM DATABASE)
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
-		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
-		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
-		
-		// TRY EXCHANGE USD (NEED FROM EXTERNAL API)
 		result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
-		// CLOSE SESSION FACTORY
 		HibernateUtil.shutdown();
 
 		return;
