@@ -36,14 +36,14 @@ public class Controller {
 		this.config = config;
 	}
 
-	public Rate getRate(CurrencyTypes code, LocalDate date) {
+	public Rate getPrice(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
 		int backDaysCounter = 0;
 
 		while (backDaysCounter <= config.getMaxBackDays()) {
 
 			for (Provider provider : providers) {
-				rate = provider.getRate(code, date);
+				rate = provider.getPrice(code, date);
 				if (rate != null) {
 					Rate result = new Rate(code, date, rate);
 

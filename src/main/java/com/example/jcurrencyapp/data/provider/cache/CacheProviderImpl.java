@@ -16,25 +16,25 @@ public class CacheProviderImpl implements Provider {
 	Map<Rate, BigDecimal> memory = new HashMap<Rate, BigDecimal>();
 
 	@Override
-	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+	public BigDecimal getPrice(CurrencyTypes code, LocalDate date) {
 		return memory.get(new Rate(code, date));
 	}
 
 	@Override
 	public void saveRate(Rate rate) {
 		if (rate != null) {
-			memory.put(rate, rate.getRate());
+			memory.put(rate, rate.getPrice());
 		}
 	}
 
 	@Override
 	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-		BigDecimal rate;
+		BigDecimal price;
 		List<Rate> rates = new ArrayList<Rate>();
 		while (startDate.isBefore(endDate)) {
-			rate = this.getRate(code, startDate);
-			if (rate != null) {
-				rates.add(new Rate(code, startDate, rate));
+			price = this.getPrice(code, startDate);
+			if (price != null) {
+				rates.add(new Rate(code, startDate, price));
 			}
 
 			startDate = startDate.plusDays(1);

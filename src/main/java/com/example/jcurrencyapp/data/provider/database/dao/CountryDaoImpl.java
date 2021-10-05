@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.dao;
+/*package com.example.jcurrencyapp.data.provider.database.dao;
 
 import com.example.jcurrencyapp.data.provider.database.model.Country;
 
@@ -10,4 +10,4 @@ public class CountryDaoImpl extends AbstractJpaDAO<Country> implements CountryDa
 		setClazz(Country.class);
 	}
 	
-}
+}*/

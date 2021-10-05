@@ -27,10 +27,10 @@ public class NbpXmlProviderImplTest extends BaseTest{
 	public void shouldGiveValidResponse_WhenHappyPathForXml() {
 		// Given
 		BigDecimal validResult = new BigDecimal("3.7695");
-		Mockito.when(mockNbpXmlProvider.getRate(CurrencyTypes.USD, LocalDate.of(2016, 4, 12))).thenReturn(new BigDecimal("3.7695"));
+		Mockito.when(mockNbpXmlProvider.getPrice(CurrencyTypes.USD, LocalDate.of(2016, 4, 12))).thenReturn(new BigDecimal("3.7695"));
 		
 		// When
-		BigDecimal result = mockNbpXmlProvider.getRate(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));
+		BigDecimal result = mockNbpXmlProvider.getPrice(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));
 		
 		// Then
 		assertThat(result).isEqualTo(validResult);

@@ -5,31 +5,30 @@ import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import com.example.jcurrencyapp.model.CurrencyTypes;
+import com.example.jcurrencyapp.model.Rate;
+
 @NamedQueries({
-		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " AND u.date = :" + Quotation.PARAM_DATE),
-		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
+				+ Quotation.PARAM_CURRENCY_CODE + " AND u.date = :" + Quotation.PARAM_DATE),
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
+				+ Quotation.PARAM_CURRENCY_CODE + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
 				+ Quotation.PARAM_END_DATE),
-		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate "),
-		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " ORDER BY u.rate DESC") })
+		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
+				+ Quotation.PARAM_CURRENCY_CODE + " ORDER BY u.price "),
+		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
+				+ Quotation.PARAM_CURRENCY_CODE + " ORDER BY u.price DESC") })
 
 @Entity
-@Table(name = "quotation", indexes = 
-	@Index(name = "quotation_index", columnList = "date, rate", unique = true) )
+@Table(name = "quotation", indexes = @Index(name = "quotation_index", columnList = "currencyCode, date, price", unique = true))
 public class Quotation {
 
 	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
@@ -40,68 +39,51 @@ public class Quotation {
 	public static final String PARAM_DATE = "date";
 	public static final String PARAM_START_DATE = "startDate";
 	public static final String PARAM_END_DATE = "endDate";
-	public static final String PARAM_CURRENCY = "currency";
+	public static final String PARAM_CURRENCY_CODE = "currencyCode";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	@Column(name = "quotation_id")
 	private Long quotationId;
-	
-	@ManyToOne
-	@JoinColumn(name = "currency_id", foreignKey = @ForeignKey(name = "quotation_currency_fk"))
-	private Currency currency;
-	
+	private String currencyCode;
 	LocalDate date;
-	
 	@Column(precision = 16, scale = 8)
-	private BigDecimal rate;
+	private BigDecimal price;
 
 	public Quotation() {
 		super();
 	}
 
-	public Quotation(Currency currency, LocalDate date, BigDecimal rate) {
+	public Quotation(Rate rate) {
 		super();
-		this.currency = currency;
-		this.date = date;
-		this.rate = rate;
+		this.currencyCode = rate.getCurrency().getCode();
+		this.date = rate.getDate();
+		this.price = rate.getPrice();
 	}
 
 	public Long getQuotationId() {
 		return quotationId;
 	}
 
-	public void setQuotationId(Long quotationId) {
-		this.quotationId = quotationId;
-	}
-
-	public Currency getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(Currency currency) {
-		this.currency = currency;
+	public String getCurrencyCode() {
+		return currencyCode;
 	}
 
 	public LocalDate getDate() {
 		return date;
 	}
 
-	public void setDate(LocalDate date) {
-		this.date = date;
+	public BigDecimal getPrice() {
+		return price;
 	}
 
-	public BigDecimal getRate() {
-		return rate;
-	}
-
-	public void setRate(BigDecimal ask) {
-		this.rate = ask;
+	public Rate toRate() {
+		return new Rate(CurrencyTypes.getByCode(currencyCode), date, price);
 	}
 
 	@Override
 	public String toString() {
-		return "Quotation [quotationId=" + quotationId + ", currency=" + currency + ", date=" + date + ", rate=" + rate
-				+ "]";
+		return "Quotation [quotationId=" + quotationId + ", currencyCode=" + currencyCode + ", date=" + date
+				+ ", price=" + price + "]";
 	}
 }

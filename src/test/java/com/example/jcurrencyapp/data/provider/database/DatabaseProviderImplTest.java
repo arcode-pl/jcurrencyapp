@@ -27,7 +27,7 @@ public class DatabaseProviderImplTest {
 		// I think that this need to be implemented in SQL initialization script of
 		// database or hard-coded in source for currency and country code.
 		// Load country and currency codes to database.
-		Demo.initCurrencies();
+		//Demo.initCurrencies();
 	}
 
 	@Test //data provider / data source
@@ -41,15 +41,15 @@ public class DatabaseProviderImplTest {
 		DatabaseProviderImpl provider = new DatabaseProviderImpl();
 		CurrencyTypes code = CurrencyTypes.USD;
 		LocalDate date = LocalDate.now();
-		BigDecimal rate = new BigDecimal(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_UP);
+		BigDecimal rate = new BigDecimal(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_EVEN);
 		Rate input = new Rate(code, date, rate);
 
 		// when save & get
 		provider.saveRate(input);
-		BigDecimal result = provider.getRate(code, date);
+		BigDecimal result = provider.getPrice(code, date);
 
 		// then
-		assertThat(result).isEqualTo(input.getRate());
+		assertThat(result).isEqualTo(input.getPrice());
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class DatabaseProviderImplTest {
 		LocalDate tmpDate = startDate;
 		while (tmpDate.isBefore(endDate)) {
 			inputRates.add(new Rate(code, tmpDate,
-					BigDecimal.valueOf(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_UP)));
+					BigDecimal.valueOf(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_EVEN)));
 			tmpDate = tmpDate.plusDays(1);
 		}
 

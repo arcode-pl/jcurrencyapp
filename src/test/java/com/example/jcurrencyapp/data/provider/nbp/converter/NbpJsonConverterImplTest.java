@@ -19,16 +19,16 @@ public class NbpJsonConverterImplTest {
 	}
 
 	@Test
-	public void shouldReturnAskPrice_WhenGivenSampleJsonStringFromNbp() {
+	public void shouldReturnMidPrice_WhenGivenSampleJsonStringFromNbp() {
 
 		// Given
 		NbpJsonConverterImpl converter = new NbpJsonConverterImpl();
 		String data = "{\n" + "	\"table\":\"C\",\n" + "	\"currency\":\"euro\",\n" + "	\"code\":\"EUR\",\n"
 				+ "	\"rates\":\n" + "	[{\n" + "		\"no\":\"178/C/NBP/2021\",\n" + "		\"effectiveDate\":\n"
-				+ "		\"2021-09-14\",\n" + "		\"bid\":4.5012,\n" + "		\"ask\":4.5922\n" + "	}]\n" + "}";
+				+ "		\"2021-09-14\",\n" + "		\"mid\":4.5922\n" + "	}]\n" + "}";
 
 		// When
-		BigDecimal rate = converter.getRate(data);
+		BigDecimal rate = converter.getPrice(data);
 
 		// Then
 		assertThat(rate).isEqualTo(new BigDecimal("4.5922"));
@@ -43,7 +43,7 @@ public class NbpJsonConverterImplTest {
 				+ "		\"ask\":4.5922\n" + "	}]\n" + "}";
 
 		// When
-		Throwable throwable = catchThrowable(() -> converter.getRate(data));
+		Throwable throwable = catchThrowable(() -> converter.getPrice(data));
 
 		// Then
 		assertThat(throwable).isInstanceOf(ConverterException.class)
@@ -57,7 +57,7 @@ public class NbpJsonConverterImplTest {
 		String data = null;
 
 		// When
-		Throwable throwable = catchThrowable(() -> converter.getRate(data));
+		Throwable throwable = catchThrowable(() -> converter.getPrice(data));
 
 		// Then
 		assertThat(throwable).isInstanceOf(ConverterException.class)

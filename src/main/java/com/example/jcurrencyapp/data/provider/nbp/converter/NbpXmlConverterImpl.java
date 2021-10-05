@@ -15,7 +15,7 @@ import com.example.jcurrencyapp.model.Rate;
 public class NbpXmlConverterImpl implements NbpConverter {
 
 	@Override
-	public BigDecimal getRate(String data) {
+	public BigDecimal getPrice(String data) {
 		XmlParser<NbpCurrency> parser = new XmlParser<NbpCurrency>(NbpCurrency.class);
 
 		try {

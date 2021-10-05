@@ -4,30 +4,29 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.cache.CacheProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
-import com.example.jcurrencyapp.data.provider.database.model.Country;
-import com.example.jcurrencyapp.data.provider.database.model.Currency;
 import com.example.jcurrencyapp.data.provider.database.model.Quotation;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
+//• Znajdź kurs o największej różnicy kursy w okresie
+//• Znajdź minimalną/maksymalną wartość w okresie
+//• Znajdź pięć najlepszych kursów dla waluty na + i -
+//• Znajdź kraj z co najmniej dwiema walutami.
+//• Zaimportować kurs walut za ostatnie 1.000000 kursów
+
 public class Demo {
 	
-	public static void initCurrencies() {
+	/*public static void initCurrencies() {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
@@ -83,7 +82,7 @@ public class Demo {
 		} finally {
 			session.close();
 		}
-	}
+	}*/
 
 	public static void initQuotations() {
 		for (CurrencyTypes val : CurrencyTypes.values()) {
@@ -93,32 +92,43 @@ public class Demo {
 	}
 	
 	public static void initTables() {
-		initCurrencies();
-		initCountries();
+		//initCurrencies();
+		//initCountries();
 		initQuotations();
 	}
 
-	public static Currency readCurrency(CurrencyTypes code) {
+	/*public static Currency readCurrency(CurrencyTypes code) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		
 		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
 		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
 
 		return (Currency) query.getSingleResult();
-	}
+	}*/
 
 	@SuppressWarnings("unchecked")
-	public static List<Quotation> readMaxValues(Currency currency, int limit) {
+	public static List<Quotation> readMaxValues(CurrencyTypes currency, int limit) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Quotation.FIND_MAX_BY_CODE);
 		query.setMaxResults(limit);
-		query.setParameter(Quotation.PARAM_CURRENCY, currency);
+		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
 
 		return (List<Quotation>) query.getResultList();
 	}
 	
 	@SuppressWarnings("unchecked")
+	public static List<Quotation> readMinValues(CurrencyTypes currency, int limit) {
+		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
+
+		Query query = em.createNamedQuery(Quotation.FIND_MIN_BY_CODE);
+		query.setMaxResults(limit);
+		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
+
+		return (List<Quotation>) query.getResultList();
+	}
+	
+	/*@SuppressWarnings("unchecked")
 	public static List<Country> getCountryFromDatabase(String name) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
@@ -126,18 +136,7 @@ public class Demo {
 		q.setParameter(1, name);
 
 		return (List<Country>) q.getResultList();
-	}
-
-	@SuppressWarnings("unchecked")
-	public static List<Quotation> readMinValues(Currency currency, int limit) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-
-		Query query = em.createNamedQuery(Quotation.FIND_MIN_BY_CODE);
-		query.setMaxResults(limit);
-		query.setParameter(Quotation.PARAM_CURRENCY, currency);
-
-		return (List<Quotation>) query.getResultList();
-	}
+	}*/
 
 	// Example usage of API
 	public static void main(String[] args) {

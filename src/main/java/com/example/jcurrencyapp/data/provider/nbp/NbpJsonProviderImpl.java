@@ -22,11 +22,11 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 	}
 
 	@Override
-	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+	public BigDecimal getPrice(CurrencyTypes code, LocalDate date) {
 
 		WebApiResponse response = WebApiController.tryReadApi(NbpWebApiRequest.getJsonQuery(code, date));
 		if (response.getCode() == 200) {
-			return converter.getRate(response.getText());
+			return converter.getPrice(response.getText());
 		}
 
 		return null;

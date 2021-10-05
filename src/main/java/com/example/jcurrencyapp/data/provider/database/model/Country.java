@@ -1,15 +1,26 @@
-package com.example.jcurrencyapp.data.provider.database.model;
+/*package com.example.jcurrencyapp.data.provider.database.model;
 
 import java.util.HashSet;
 import java.util.Set;
 
 //import org.hibernate.annotations.Cache;
 //import org.hibernate.annotations.CacheConcurrencyStrategy;
-import javax.persistence.*;
-
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedNativeQuery;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 @NamedQueries({
 	@NamedQuery(name = Country.FIND_ALL, query = "SELECT u FROM Country u ORDER BY u.countryName"),
@@ -19,8 +30,6 @@ import org.hibernate.annotations.FetchMode;
 @NamedNativeQuery(name = Country.FIND_BY_COUNTRY_NAME_NATIVE, query = "SELECT * FROM country WHERE country_name = ?", resultClass = Country.class)
 
 @Entity
-//@Cacheable
-//@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Table(name = "country", indexes = 
 	@Index(name = "country_index", columnList = "country_name", unique = true) )
 public class Country {
@@ -43,8 +52,8 @@ public class Country {
 	@JoinTable(name = "country_currency", 
 		joinColumns = {@JoinColumn(name = "country_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "country_currency_fk")) }, 
 		inverseJoinColumns = {@JoinColumn(name = "currency_id", nullable = false, updatable = false, foreignKey = @ForeignKey(name = "currency_country_fk")) })
-	@Fetch(FetchMode.JOIN)
-	@BatchSize(size = 25)
+	//@Fetch(FetchMode.JOIN)
+	//@BatchSize(size = 25)
 	private Set<Currency> officialCurrencies = new HashSet<Currency>();
 
 	public Country() {
@@ -52,23 +61,15 @@ public class Country {
 	}
 	
 	public Country(String countryName) {
-		this.setCountryName(countryName);
+		this.countryName = countryName;
 	}
 	
 	public Long getCountryId() {
 		return countryId;
 	}
 
-	public void setCountryId(Long countryId) {
-		this.countryId = countryId;
-	}
-
 	public String getCountryName() {
 		return countryName;
-	}
-
-	public void setCountryName(String countryName) {
-		this.countryName = countryName;
 	}
 
 	public Set<Currency> getOfficialCurrencies() {
@@ -83,4 +84,4 @@ public class Country {
 	public String toString() {
 		return "Country [countryId=" + countryId + ", countryName=" + countryName + "]";
 	}
-}
+}*/

@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.dao;
+/*package com.example.jcurrencyapp.data.provider.database.dao;
 
 import java.util.List;
 
@@ -18,4 +18,5 @@ public interface CurrencyDao {
 
 	void deleteById(long entityId);
 	
-}
+	//• Znajdź kraj z co najmniej dwiema walutami.
+}*/

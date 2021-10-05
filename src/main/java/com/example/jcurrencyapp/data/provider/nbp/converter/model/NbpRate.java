@@ -17,7 +17,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 	"no",
 	"effectiveDate",
 	"bid",
-	"ask"
+	"ask",
+	"mid"
 })
 
 @JacksonXmlRootElement(localName = "Rate")
@@ -36,6 +37,9 @@ public class NbpRate {
 	@JsonProperty("ask")
 	@JacksonXmlProperty(localName = "Ask")
 	private Double ask;
+	@JsonProperty("mid")
+	@JacksonXmlProperty(localName = "Mid")
+	private Double mid;
 	@JsonIgnore
 	private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -85,6 +89,18 @@ public class NbpRate {
 	@JacksonXmlProperty(localName = "Ask")
 	public void setAsk(Double ask) {
 		this.ask = ask;
+	}
+	
+	@JsonProperty("mid")
+	@JacksonXmlProperty(localName = "Mid")
+	public Double getMid() {
+		return mid;
+	}
+	
+	@JsonProperty("mid")
+	@JacksonXmlProperty(localName = "Mid")
+	public void setMid(Double mid) {
+		this.mid = mid;
 	}
 
 	@JsonAnyGetter

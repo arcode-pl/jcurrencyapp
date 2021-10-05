@@ -38,8 +38,8 @@ public class JCurrency {
 		
 		try {
 			validator.validateInputs(code, quantity);
-			Rate rate = controller.getRate(code, validator.fixDate(date));
-			result = Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
+			Rate rate = controller.getPrice(code, validator.fixDate(date));
+			result = Optional.of(new Rate(rate.getCurrency(), rate.getDate(), rate.getPrice().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}

@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.model;
+/*package com.example.jcurrencyapp.data.provider.database.model;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NaturalId;
 
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
@@ -40,38 +41,28 @@ public class Currency {
 	@Column(name = "currency_id")
 	private Long currencyId;
 	
+	@NaturalId
 	@Column(name = "currency_code", nullable = false)
 	private String currencyCode;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
 	@Fetch(FetchMode.JOIN)
 	private Set<Country> supportedCountries = new HashSet<Country>();
-	
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "currency")
-//    private List<Quotation> quotations = new ArrayList<Quotation>();
-	
+
 	public Currency() {
 		super();
 	}
 	
 	public Currency(CurrencyTypes code) {
-		this.setCurrencyCode(code.toString());
+		this.currencyCode = code.toString();
 	}
 	
 	public Long getCurrencyId() {
 		return currencyId;
 	}
 
-	public void setCurrencyId(Long currencyId) {
-		this.currencyId = currencyId;
-	}
-
 	public String getCurrencyCode() {
 		return currencyCode;
-	}
-
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
 	}
 	
 	public Set<Country> getSupportedCountries() {
@@ -82,21 +73,8 @@ public class Currency {
 		this.supportedCountries = supportedCountries;
 	}
 	
-//	public List<Quotation> getQuotations() {
-//		return quotations;
-//	}
-//
-//	public void setQuotations(List<Quotation> quotations) {
-//		this.quotations = quotations;
-//	}
-	
-//	public void addQuotation(Quotation quotation) {
-//        this.quotations.add(quotation);
-//        quotation.setCurrency(this);
-//    }
-	
 	@Override
 	public String toString() {
 		return "Currency [currencyId=" + currencyId + ", currencyCode=" + currencyCode + "]";
 	}
-}
+}*/

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -30,15 +31,16 @@ public class JCurrencyTest {
 		// Given
 		JCurrency controller = new JCurrency();
 		CurrencyTypes currency = CurrencyTypes.USD;
-		BigDecimal quantity = new BigDecimal("33.4567");
+		BigDecimal quantity = new BigDecimal("33.45670");
 		LocalDate date = LocalDate.of(2016, 04, 12);
-		BigDecimal usdAskPriceForDay20160412 = new BigDecimal("3.7695");
+		BigDecimal usdMidPriceForDay20160412 = new BigDecimal("3.7490");
 
 		// When
 		Optional<Rate> result = controller.tryExchange(currency, quantity, date);
-
+		BigDecimal validResult = quantity.multiply(usdMidPriceForDay20160412).setScale(8, RoundingMode.HALF_EVEN);
+		
 		// Then
-		assertThat(result.get().getRate()).isEqualTo(quantity.multiply(usdAskPriceForDay20160412));
+		assertThat(result.get().getPrice()).isEqualTo(validResult);
 	}
 
 	@Test

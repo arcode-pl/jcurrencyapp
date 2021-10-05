@@ -16,37 +16,18 @@ import org.hibernate.Transaction;
 import com.example.jcurrencyapp.Config;
 import com.example.jcurrencyapp.HibernateUtil;
 import com.example.jcurrencyapp.data.provider.Provider;
-import com.example.jcurrencyapp.data.provider.database.model.Currency;
 import com.example.jcurrencyapp.data.provider.database.model.Quotation;
-import com.example.jcurrencyapp.exceptions.DatabaseProviderException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
 public class DatabaseProviderImpl implements Provider {
 
-	private Currency readCurrency(CurrencyTypes code) {
+	private Quotation readQuotation(CurrencyTypes currency, LocalDate date) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-		// TODO: is this correct approach?
-		if (!em.isJoinedToTransaction()) {
-			em.joinTransaction();
-		}
-
-		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
-		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
-
-		return (Currency) query.getSingleResult();
-	}
-
-	private Quotation readQuotation(Currency currency, LocalDate date) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-		// TODO: is this correct approach?
-		if (!em.isJoinedToTransaction()) {
-			em.joinTransaction();
-		}
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE);
 		query.setParameter(Quotation.PARAM_DATE, date);
-		query.setParameter(Quotation.PARAM_CURRENCY, currency);
+		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
 
 		return (Quotation) query.getSingleResult();
 	}
@@ -68,11 +49,6 @@ public class DatabaseProviderImpl implements Provider {
 				}
 			}
 			tx.commit();
-
-			// Synchronize persisted object, please check how it works
-//			for (Quotation quotation : quotations) {
-//				quotation.getCurrency().addQuotation(quotation);
-//			}
 		} catch (Exception e) {
 			if (tx != null) {
 				tx.rollback();
@@ -83,34 +59,23 @@ public class DatabaseProviderImpl implements Provider {
 	}
 
 	@SuppressWarnings("unchecked")
-	private List<Quotation> readQuotations(Currency currency, LocalDate startDate, LocalDate endDate) {
+	private List<Quotation> readQuotations(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 
 		Query query = em.createNamedQuery(Quotation.FIND_BY_CODE_AND_DATE_RANGE);
 		query.setParameter(Quotation.PARAM_START_DATE, startDate);
 		query.setParameter(Quotation.PARAM_END_DATE, endDate);
-		query.setParameter(Quotation.PARAM_CURRENCY, currency);
+		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
 
 		return (List<Quotation>) query.getResultList();
-	}
-
-	private Quotation toQuotation(Rate rate) {
-		Currency currency;
-
-		try {
-			currency = this.readCurrency(rate.getCode());
-			return new Quotation(currency, rate.getDate(), rate.getRate());
-		} catch (NoResultException e) {
-			throw new DatabaseProviderException("Issue in toQuotation", new Throwable());
-		}
 	}
 
 	/* PROVIDER SECTION */
 
 	@Override
-	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+	public BigDecimal getPrice(CurrencyTypes currency, LocalDate date) {
 		try {
-			return this.readQuotation(this.readCurrency(code), date).getRate();
+			return this.readQuotation(currency, date).getPrice();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -118,19 +83,18 @@ public class DatabaseProviderImpl implements Provider {
 
 	@Override
 	public void saveRate(Rate rate) {
-		saveQuotations(Arrays.asList(toQuotation(rate)));
+		saveQuotations(Arrays.asList(new Quotation(rate)));
 	}
 
 	@Override
-	public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
+	public List<Rate> getRates(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
 		List<Quotation> quotations;
 		List<Rate> rates = new ArrayList<Rate>();
 
 		try {
-			quotations = this.readQuotations(this.readCurrency(code), startDate, endDate);
+			quotations = this.readQuotations(currency, startDate, endDate);
 			for (Quotation quotation : quotations) {
-				rates.add(
-						new Rate(quotation.getCurrency().getCurrencyCode(), quotation.getDate(), quotation.getRate()));
+				rates.add(new Rate(currency, quotation.getDate(), quotation.getPrice()));
 			}
 
 		} catch (NoResultException e) {
@@ -145,7 +109,7 @@ public class DatabaseProviderImpl implements Provider {
 		if (rates != null) {
 			List<Quotation> quotations = new ArrayList<Quotation>();
 			for (Rate rate : rates) {
-				quotations.add(toQuotation(rate));
+				quotations.add(new Quotation(rate));
 			}
 			saveQuotations(quotations);
 		}

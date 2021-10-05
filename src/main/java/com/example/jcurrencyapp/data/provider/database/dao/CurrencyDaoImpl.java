@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.dao;
+/*package com.example.jcurrencyapp.data.provider.database.dao;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -28,4 +28,4 @@ public class CurrencyDaoImpl extends AbstractJpaDAO <Currency> implements Curren
 
 		return (Currency) query.getSingleResult();
 	}
-}
+}*/

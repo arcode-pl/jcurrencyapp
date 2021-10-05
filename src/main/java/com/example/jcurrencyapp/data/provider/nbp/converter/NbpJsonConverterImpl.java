@@ -15,13 +15,13 @@ import com.example.jcurrencyapp.model.Rate;
 public class NbpJsonConverterImpl implements NbpConverter {
 
 	@Override
-	public BigDecimal getRate(String data) {
+	public BigDecimal getPrice(String data) {
 		JsonParser<NbpCurrency> parser = new JsonParser<NbpCurrency>(NbpCurrency.class);
 
 		try {
 			Optional<NbpCurrency> currency = parser.deserialize(data);
 			if (currency.isPresent()) {
-				return BigDecimal.valueOf(currency.get().getSimpleAskRate());
+				return BigDecimal.valueOf(currency.get().getRates().get(0).getMid());
 			}
 		} catch (Exception e) {
 			throw new ConverterException("Can't get rate for input data: " + e.getMessage(), e);
@@ -40,7 +40,7 @@ public class NbpJsonConverterImpl implements NbpConverter {
 			Optional<NbpCurrency> currency = parser.deserialize(data);
 			if (currency.isPresent()) {
 				for (NbpRate rate : currency.get().getRates()) {
-					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getAsk()));
+					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getMid()));
 				}
 			}
 		} catch (Exception e) {

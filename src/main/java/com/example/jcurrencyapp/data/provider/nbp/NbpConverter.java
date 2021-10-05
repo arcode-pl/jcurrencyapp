@@ -7,6 +7,6 @@ import com.example.jcurrencyapp.model.Rate;
 
 //Returns currency rate selected by code and value
 public interface NbpConverter {
-	public BigDecimal getRate(String data);
+	public BigDecimal getPrice(String data);
 	public List<Rate> getRates(String data);
 }

@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.dao;
+/*package com.example.jcurrencyapp.data.provider.database.dao;
 
 import java.util.List;
 
@@ -19,4 +19,4 @@ public interface CountryDao {
 
 	void deleteById(long entityId);
 	
-}
+}*/

@@ -30,7 +30,7 @@ public class NbpXmlConverterImplTest {
 				+ "			<Ask>3.8916</Ask>\n" + "		</Rate>\n" + "	</Rates>\n" + "</ExchangeRatesSeries>";
 
 		// When
-		BigDecimal rate = converter.getRate(data);
+		BigDecimal rate = converter.getPrice(data);
 
 		// Then
 		assertThat(rate).isEqualTo(new BigDecimal("3.8916"));
@@ -48,7 +48,7 @@ public class NbpXmlConverterImplTest {
 				+ "</ExchangeRatesSeries>";
 
 		// When
-		Throwable throwable = catchThrowable(() -> converter.getRate(data));
+		Throwable throwable = catchThrowable(() -> converter.getPrice(data));
 
 		// Then
 		assertThat(throwable).isInstanceOf(ConverterException.class)
@@ -62,7 +62,7 @@ public class NbpXmlConverterImplTest {
 		String data = null;
 
 		// When
-		Throwable throwable = catchThrowable(() -> converter.getRate(data));
+		Throwable throwable = catchThrowable(() -> converter.getPrice(data));
 
 		// Then
 		assertThat(throwable).isInstanceOf(ConverterException.class)

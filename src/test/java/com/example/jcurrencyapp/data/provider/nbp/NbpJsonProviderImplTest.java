@@ -28,10 +28,10 @@ public class NbpJsonProviderImplTest extends BaseTest{
 		// Given
 		BigDecimal validResult = new BigDecimal("3.7695");
 		LocalDate date = LocalDate.of(2016, 4, 12);
-		Mockito.when(mockNbpJsonProvider.getRate(CurrencyTypes.USD, date)).thenReturn(new BigDecimal("3.7695"));
+		Mockito.when(mockNbpJsonProvider.getPrice(CurrencyTypes.USD, date)).thenReturn(new BigDecimal("3.7695"));
 		
 		// When
-		BigDecimal result = mockNbpJsonProvider.getRate(CurrencyTypes.USD, date);
+		BigDecimal result = mockNbpJsonProvider.getPrice(CurrencyTypes.USD, date);
 		
 		// Then
 		assertThat(result).isEqualTo(validResult);
