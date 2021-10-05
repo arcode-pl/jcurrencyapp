@@ -1,3 +1,4 @@
+package com.example.jcurrencyapp.data.provider.database.tmp;
 /*package com.example.jcurrencyapp.data.provider.database.model;
 
 import java.util.HashSet;

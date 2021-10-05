@@ -1,4 +1,5 @@
-package com.example.jcurrencyapp.data.provider.database.dao;
+package com.example.jcurrencyapp.data.provider.database.tmp;
+/*package com.example.jcurrencyapp.data.provider.database.dao;
 
 //import java.io.Serializable;
 import java.util.List;
@@ -10,7 +11,7 @@ public abstract class AbstractJpaDAO<T> { //extends Serializable
 
 	private Class<T> clazz;
 
-	@PersistenceContext
+	//@PersistenceContext
 	EntityManager entityManager;
 
 	public final void setClazz(Class<T> clazz) {
@@ -42,4 +43,4 @@ public abstract class AbstractJpaDAO<T> { //extends Serializable
 		T entity = findOne(entityId);
 		delete(entity);
 	}
-}
+}*/

@@ -1,3 +1,4 @@
+package com.example.jcurrencyapp.data.provider.database.tmp;
 /*package com.example.jcurrencyapp.data.provider.database.dao;
 
 import com.example.jcurrencyapp.data.provider.database.model.Country;

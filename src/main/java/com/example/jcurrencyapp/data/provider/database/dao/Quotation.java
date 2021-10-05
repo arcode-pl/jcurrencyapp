@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.model;
+package com.example.jcurrencyapp.data.provider.database.dao;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,11 +17,16 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
 @NamedQueries({
+		@NamedQuery(name = Quotation.FIND_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
+				+ Quotation.PARAM_CURRENCY_CODE),
+
 		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
 				+ Quotation.PARAM_CURRENCY_CODE + " AND u.date = :" + Quotation.PARAM_DATE),
+		
 		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
 				+ Quotation.PARAM_CURRENCY_CODE + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
 				+ Quotation.PARAM_END_DATE),
+		
 		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
 				+ Quotation.PARAM_CURRENCY_CODE + " ORDER BY u.price "),
 		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currencyCode = :"
@@ -31,19 +36,20 @@ import com.example.jcurrencyapp.model.Rate;
 @Table(name = "quotation", indexes = @Index(name = "quotation_index", columnList = "currencyCode, date, price", unique = true))
 public class Quotation {
 
-	public static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
-	public static final String FIND_BY_CODE_AND_DATE_RANGE = "Quotation.findByCodeAndDateRange";
-	public static final String FIND_MAX_BY_CODE = "Quotation.findMaxByCode";
-	public static final String FIND_MIN_BY_CODE = "Quotation.findMinByCode";
+	static final String FIND_BY_CODE = "Quotation.findByCode";
+	static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
+	static final String FIND_BY_CODE_AND_DATE_RANGE = "Quotation.findByCodeAndDateRange";
+	
+	static final String FIND_MAX_BY_CODE = "Quotation.findMaxByCode";
+	static final String FIND_MIN_BY_CODE = "Quotation.findMinByCode";
 
-	public static final String PARAM_DATE = "date";
-	public static final String PARAM_START_DATE = "startDate";
-	public static final String PARAM_END_DATE = "endDate";
-	public static final String PARAM_CURRENCY_CODE = "currencyCode";
+	static final String PARAM_DATE = "date";
+	static final String PARAM_START_DATE = "startDate";
+	static final String PARAM_END_DATE = "endDate";
+	static final String PARAM_CURRENCY_CODE = "currencyCode";
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "quotation_id")
 	private Long quotationId;
 	private String currencyCode;
 	LocalDate date;

@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
+import com.example.jcurrencyapp.model.CountryTypes;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -61,11 +62,33 @@ public class Controller {
 		return null;
 	}
 
-	public void updateRates(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-		List<Rate> rates = provider.getRates(code, startDate, endDate);
-		
-		for (Provider current : providers) {
-			current.saveRates(rates);
-		}
+	public CurrencyTypes getMostUnstableCurrency(LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Rate getMinRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {	
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Rate getMaxRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Rate> getBestAskRates(CurrencyTypes currency, long quantity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public List<Rate> getBestBidRates(CurrencyTypes currency, long quantity) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public CountryTypes findCountriesWithMultipleCurrency() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

@@ -12,7 +12,8 @@ import javax.persistence.Query;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.cache.CacheProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
-import com.example.jcurrencyapp.data.provider.database.model.Quotation;
+import com.example.jcurrencyapp.data.provider.database.dao.Quotation;
+import com.example.jcurrencyapp.data.provider.database.dao.QuotationDaoImpl;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
@@ -97,52 +98,11 @@ public class Demo {
 		initQuotations();
 	}
 
-	/*public static Currency readCurrency(CurrencyTypes code) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-		
-		Query query = em.createNamedQuery(Currency.FIND_BY_CODE);
-		query.setParameter(Currency.PARAM_CURRENCY_CODE, code.toString());
-
-		return (Currency) query.getSingleResult();
-	}*/
-
-	@SuppressWarnings("unchecked")
-	public static List<Quotation> readMaxValues(CurrencyTypes currency, int limit) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-
-		Query query = em.createNamedQuery(Quotation.FIND_MAX_BY_CODE);
-		query.setMaxResults(limit);
-		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
-
-		return (List<Quotation>) query.getResultList();
-	}
-	
-	@SuppressWarnings("unchecked")
-	public static List<Quotation> readMinValues(CurrencyTypes currency, int limit) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-
-		Query query = em.createNamedQuery(Quotation.FIND_MIN_BY_CODE);
-		query.setMaxResults(limit);
-		query.setParameter(Quotation.PARAM_CURRENCY_CODE, currency.getCode());
-
-		return (List<Quotation>) query.getResultList();
-	}
-	
-	/*@SuppressWarnings("unchecked")
-	public static List<Country> getCountryFromDatabase(String name) {
-		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
-
-		Query q = em.createNamedQuery(Country.FIND_BY_COUNTRY_NAME_NATIVE);
-		q.setParameter(1, name);
-
-		return (List<Country>) q.getResultList();
-	}*/
-
 	// Example usage of API
 	public static void main(String[] args) {
 
 		// INIT CURRENCIES AND COUTRIES
-		initTables();
+		//initTables();
 
 		Optional<Rate> result;
 
@@ -158,6 +118,12 @@ public class Demo {
 //		for (Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
 //			System.out.println(var);
 //		}
+		
+		QuotationDaoImpl dao = new QuotationDaoImpl();
+		List<Quotation> quotations = dao.findAllForCurrency(CurrencyTypes.USD);
+		for (Quotation var : quotations) {
+			System.out.println(var);
+		}
 		
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
