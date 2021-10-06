@@ -1,7 +1,7 @@
 package com.example.jcurrencyapp.model;
 
 public enum CurrencyTypes {
-	THB("bat (Tajlandia)"), 
+	THB("bat (Tajlandia)"),
 	USD("dolar amerykański"), 
 	AUD("dolar australijski"), 
 	HKD("dolar Hongkongu"), 

@@ -40,7 +40,7 @@ public class NbpXmlConverterImpl implements NbpConverter {
 			Optional<NbpCurrency> currency = parser.deserialize(data);
 			if (currency.isPresent()) {
 				for (NbpRate rate : currency.get().getRates()) {
-					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getAsk()));
+					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getMid()));
 				}
 			}
 		} catch (Exception e) {

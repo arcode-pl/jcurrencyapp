@@ -1,5 +1,4 @@
-package com.example.jcurrencyapp.data.provider.database.tmp;
-/*package com.example.jcurrencyapp.data.provider.database.model;
+package com.example.jcurrencyapp.data.provider.database.dao;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -29,7 +29,8 @@ import com.example.jcurrencyapp.model.CurrencyTypes;
 
 @Entity
 @Table(name = "currency", indexes = 
-	@Index(name = "currency_index", columnList = "currency_code", unique = true) )
+	@Index(name = "currency_index", columnList = "currencycode"), uniqueConstraints = @UniqueConstraint(name = "currency_unique", columnNames = {
+	"currencycode" }) )
 public class Currency {
 	
 	public static final String FIND_ALL = "Currency.findAll";
@@ -39,15 +40,13 @@ public class Currency {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
-	@Column(name = "currency_id")
 	private Long currencyId;
 	
 	@NaturalId
-	@Column(name = "currency_code", nullable = false)
+	@Column(nullable = false)
 	private String currencyCode;
 	
 	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "officialCurrencies")
-	@Fetch(FetchMode.JOIN)
 	private Set<Country> supportedCountries = new HashSet<Country>();
 
 	public Currency() {
@@ -74,8 +73,12 @@ public class Currency {
 		this.supportedCountries = supportedCountries;
 	}
 	
+	public void addSupportedCountries(Country country) {
+		this.supportedCountries.add(country);
+	}
+	
 	@Override
 	public String toString() {
 		return "Currency [currencyId=" + currencyId + ", currencyCode=" + currencyCode + "]";
 	}
-}*/
+}

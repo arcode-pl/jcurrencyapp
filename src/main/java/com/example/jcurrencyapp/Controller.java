@@ -3,7 +3,10 @@ package com.example.jcurrencyapp;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
@@ -37,6 +40,10 @@ public class Controller {
 		this.config = config;
 	}
 
+	private void saveRates(List<Rate> rates, int currenctProviderIdx) {
+		providers.stream().filter(p -> providers.indexOf(p) < currenctProviderIdx).forEach(p -> p.saveRates(rates));
+	}
+
 	public Rate getPrice(CurrencyTypes code, LocalDate date) {
 		BigDecimal rate;
 		int backDaysCounter = 0;
@@ -63,11 +70,48 @@ public class Controller {
 	}
 
 	public CurrencyTypes getMostUnstableCurrency(LocalDate startDate, LocalDate endDate) {
-		// TODO Auto-generated method stub
-		return null;
+		// loop on currencies to get for each one date of range from available
+		// providers???
+		// check for count of rates?? or something else? to check all data valid
+
+		BigDecimal maxPriceDifference = new BigDecimal("0.0");
+		BigDecimal tmpPriceDifference;
+		CurrencyTypes currency = null;
+
+		for (CurrencyTypes var : CurrencyTypes.values()) {
+			for (Provider provider : providers) {
+				List<Rate> rates = provider.getRates(var, startDate, endDate);
+
+				if (rates != null && rates.size() > 0) {
+					rates.sort(new Comparator<Rate>() {
+						@Override
+						public int compare(Rate r1, Rate r2) {
+							return r1.getPrice().compareTo(r2.getPrice());
+						}
+					});
+
+					// update cache for next usage,
+					// maybe better update cache on application startup with all available data?
+					// focus on delay for data
+					saveRates(rates, providers.indexOf(provider));
+
+					tmpPriceDifference = rates.get(rates.size() - 1).getPrice().subtract(rates.get(0).getPrice());
+					if (tmpPriceDifference.compareTo(maxPriceDifference) > 0) {
+						maxPriceDifference = tmpPriceDifference;
+						currency = var;
+					}
+
+					System.out.println("Currency: " + var + ", difference: " + tmpPriceDifference);
+
+					break;
+				}
+			}
+		}
+
+		return currency;
 	}
 
-	public Rate getMinRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {	
+	public Rate getMinRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
 		// TODO Auto-generated method stub
 		return null;
 	}

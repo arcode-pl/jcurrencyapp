@@ -15,9 +15,11 @@ public enum CountryTypes {
 	SV("Salwador", Arrays.asList(CurrencyTypes.USD, CurrencyTypes.BTC));
 	
 	private String name;
+	private List<CurrencyTypes> currencies;
 
 	CountryTypes(String name, List<CurrencyTypes> currencies) {
 		this.name = name;
+		this.currencies = currencies;
 	}
 	
 	public static CountryTypes getByCode(String code) {
@@ -36,5 +38,9 @@ public enum CountryTypes {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public List<CurrencyTypes> getCurrencies() {
+		return currencies;
 	}
 }

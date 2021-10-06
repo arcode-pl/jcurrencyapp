@@ -15,6 +15,7 @@ import org.testng.annotations.Test;
 import com.example.jcurrencyapp.Config;
 import com.example.jcurrencyapp.Demo;
 import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
+import com.example.jcurrencyapp.data.provider.database.dao.DaoImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -35,10 +36,12 @@ public class DatabaseProviderImplTest {
 		
 	}
 	
+	/* Integration tests */
+	
 	@Test
 	public void shouldSaveRate_And_GetRate() {
 		// given
-		DatabaseProviderImpl provider = new DatabaseProviderImpl();
+		DatabaseProviderImpl provider = new DatabaseProviderImpl(new DaoImpl());
 		CurrencyTypes code = CurrencyTypes.USD;
 		LocalDate date = LocalDate.now();
 		BigDecimal rate = new BigDecimal(Math.random()).setScale(Config.RATE_SCALE, RoundingMode.HALF_EVEN);
@@ -55,7 +58,7 @@ public class DatabaseProviderImplTest {
 	@Test
 	public void shouldSaveRates_And_GetRates() {
 		// given
-		DatabaseProviderImpl provider = new DatabaseProviderImpl();
+		DatabaseProviderImpl provider = new DatabaseProviderImpl(new DaoImpl());
 		CurrencyTypes code = CurrencyTypes.USD;
 		LocalDate startDate = LocalDate.of(2016, 7, 10);
 		LocalDate endDate = LocalDate.of(2016, 7, 20);

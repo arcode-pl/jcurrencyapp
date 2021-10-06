@@ -6,33 +6,27 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
-import javax.persistence.Query;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import com.example.jcurrencyapp.Config;
-import com.example.jcurrencyapp.HibernateUtil;
 import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.database.dao.Currency;
+import com.example.jcurrencyapp.data.provider.database.dao.Dao;
 import com.example.jcurrencyapp.data.provider.database.dao.Quotation;
-import com.example.jcurrencyapp.data.provider.database.dao.QuotationDaoImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
 public class DatabaseProviderImpl implements Provider {
 
-	QuotationDaoImpl quotationDao;
-
-	public DatabaseProviderImpl() {
-		quotationDao = new QuotationDaoImpl();
+	Dao dao;
+	
+	public DatabaseProviderImpl(Dao dao) {
+		this.dao = dao;
 	}
 
 	@Override
 	public BigDecimal getPrice(CurrencyTypes currency, LocalDate date) {
 		try {
-			return quotationDao.findForCurrencyAndData(currency, date).getPrice();
+			return dao.findForCurrencyAndData(currency, date).getPrice();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -40,7 +34,8 @@ public class DatabaseProviderImpl implements Provider {
 
 	@Override
 	public void saveRate(Rate rate) {
-		quotationDao.insertIntoQuotations(Arrays.asList(new Quotation(rate)));
+		Currency currency = dao.getCurrency(rate.getCurrency());
+		dao.insertIntoQuotations(Arrays.asList(new Quotation(currency, rate.getDate(), rate.getPrice())));
 	}
 
 	@Override
@@ -49,7 +44,7 @@ public class DatabaseProviderImpl implements Provider {
 		List<Rate> rates = new ArrayList<Rate>();
 
 		try {
-			quotations = quotationDao.findAllForCurrencyWithDataRange(currency, startDate, endDate);
+			quotations = dao.findAllForCurrencyWithDataRange(currency, startDate, endDate);
 			for (Quotation quotation : quotations) {
 				rates.add(new Rate(currency, quotation.getDate(), quotation.getPrice()));
 			}
@@ -66,9 +61,10 @@ public class DatabaseProviderImpl implements Provider {
 		if (rates != null) {
 			List<Quotation> quotations = new ArrayList<Quotation>();
 			for (Rate rate : rates) {
-				quotations.add(new Quotation(rate));
+				Currency currency = dao.getCurrency(rate.getCurrency());
+				quotations.add(new Quotation(currency, rate.getDate(), rate.getPrice()));
 			}
-			quotationDao.insertIntoQuotations(quotations);
+			dao.insertIntoQuotations(quotations);
 		}
 	}
 

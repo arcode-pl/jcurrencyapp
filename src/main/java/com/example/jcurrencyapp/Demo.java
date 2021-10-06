@@ -4,18 +4,27 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.cache.CacheProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.dao.Quotation;
-import com.example.jcurrencyapp.data.provider.database.dao.QuotationDaoImpl;
+import com.example.jcurrencyapp.data.provider.database.dao.Country;
+import com.example.jcurrencyapp.data.provider.database.dao.Currency;
+import com.example.jcurrencyapp.data.provider.database.dao.DaoImpl;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
+import com.example.jcurrencyapp.data.provider.nbp.NbpParams;
 import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
+import com.example.jcurrencyapp.model.CountryTypes;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -26,8 +35,8 @@ import com.example.jcurrencyapp.model.Rate;
 //• Zaimportować kurs walut za ostatnie 1.000000 kursów
 
 public class Demo {
-	
-	/*public static void initCurrencies() {
+
+	public static void initCurrencies() {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
@@ -60,13 +69,15 @@ public class Demo {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
+		DaoImpl dao = new DaoImpl();
 
 		try {
 			tx = session.beginTransaction();
 
 			int i = 0;
-			for (String val : Locale.getISOCountries()) {
-				Country country = new Country(val);
+			for (CountryTypes tmpCountry : CountryTypes.values()) {
+				Country country = new Country(tmpCountry.getCode());
+
 				session.persist(country);
 				if (++i % Config.BATCH_SIZE == 0) {
 					session.flush();
@@ -83,53 +94,59 @@ public class Demo {
 		} finally {
 			session.close();
 		}
-	}*/
+	}
+
+	public static void linkCountryCurrencies() {
+		DaoImpl dao = new DaoImpl();
+		for (CountryTypes tmpCountry : CountryTypes.values()) {
+			Country country = dao.getCountry(tmpCountry);
+			for (CurrencyTypes tmpCurrency : tmpCountry.getCurrencies()) {
+				Currency currency = dao.getCurrency(tmpCurrency);
+				currency.addSupportedCountries(country);
+				country.addOfficialCurrency(currency);
+			}
+		}
+	}
 
 	public static void initQuotations() {
 		for (CurrencyTypes val : CurrencyTypes.values()) {
-			List<Rate> rates = new NbpJsonProviderImpl().getRates(val, LocalDate.of(2002, 1, 1), LocalDate.now());
-			new DatabaseProviderImpl().saveRates(rates);
+			List<Rate> rates = new NbpJsonProviderImpl().getRates(val, LocalDate.of(2019, 1, 1), LocalDate.now());
+			new DatabaseProviderImpl(new DaoImpl()).saveRates(rates);
 		}
 	}
-	
+
 	public static void initTables() {
-		//initCurrencies();
-		//initCountries();
+		initCurrencies();
+		initCountries();
+		linkCountryCurrencies();
 		initQuotations();
 	}
 
 	// Example usage of API
 	public static void main(String[] args) {
 
-		// INIT CURRENCIES AND COUTRIES
-		//initTables();
+		// Initialize currencies, countries and quotations table in database for demo
+		// usage only.
+		initTables();
 
 		Optional<Rate> result;
 
-		// INIT WITH PROVIDERS
-		List<Provider> providers = Arrays.asList(new CacheProviderImpl(), new DatabaseProviderImpl(),
+		// Initialize application
+		List<Provider> providers = Arrays.asList(new CacheProviderImpl(), new DatabaseProviderImpl(new DaoImpl()),
 				new NbpJsonProviderImpl(), new NbpXmlProviderImpl());
 		JCurrency jcurrency = new JCurrency(providers);
-		
-//		for (Quotation var : readMaxValues(readCurrency(CurrencyTypes.EUR), 5)) {
-//			System.out.println(var);
-//		}
-//		
-//		for (Quotation var : readMinValues(readCurrency(CurrencyTypes.EUR), 5)) {
-//			System.out.println(var);
-//		}
-		
-		QuotationDaoImpl dao = new QuotationDaoImpl();
-		List<Quotation> quotations = dao.findAllForCurrency(CurrencyTypes.USD);
-		for (Quotation var : quotations) {
-			System.out.println(var);
-		}
-		
+
 		result = jcurrency.tryExchange(CurrencyTypes.EUR, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
 		result = jcurrency.tryExchange(CurrencyTypes.USD, new BigDecimal("1.0"), LocalDate.now().minusDays(2));
 		result.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
+
+		Optional<CurrencyTypes> currency = jcurrency.getMostUnstableCurrency(NbpParams.START_DATE, LocalDate.now());
+		currency.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
+
+		currency = jcurrency.getMostUnstableCurrency(NbpParams.START_DATE, LocalDate.now());
+		currency.ifPresentOrElse(p -> System.out.println(p.toString()), () -> System.out.println("empty"));
 
 		HibernateUtil.shutdown();
 
