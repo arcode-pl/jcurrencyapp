@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.example.jcurrencyapp.data.provider.nbp.converter.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 
 public class NbpXmlConverterImplTest {

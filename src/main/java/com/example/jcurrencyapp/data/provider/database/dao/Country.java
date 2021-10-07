@@ -24,13 +24,11 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 @NamedQueries({ @NamedQuery(name = Country.FIND_ALL, query = "SELECT u FROM Country u ORDER BY u.countryName"),
 		@NamedQuery(name = Country.FIND_BY_COUNTRY_NAME, query = "SELECT u FROM Country u WHERE u.countryName = :"
 				+ Country.PARAM_COUNTRY_NAME),
-		@NamedQuery(name = Country.FIND_COUNTRY_WITH_MULTIPLE_CURRENCY, query = "SELECT u, SIZE(u.officialCurrencies) FROM Country u WHERE SIZE(u.officialCurrencies) > 1") })
+		@NamedQuery(name = Country.FIND_COUNTRY_WITH_MULTIPLE_CURRENCY, query = "SELECT u, SIZE(u.officialCurrencies) FROM Country u JOIN FETCH u.officialCurrencies WHERE SIZE(u.officialCurrencies) > 1") })
 
 @NamedNativeQuery(name = Country.FIND_BY_COUNTRY_NAME_NATIVE, query = "SELECT * FROM country WHERE country_name = ?", resultClass = Country.class)
 

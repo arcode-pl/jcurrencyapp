@@ -10,7 +10,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.BaseTest;
-import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpJsonProviderImplTest extends BaseTest{

@@ -4,11 +4,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -17,13 +15,12 @@ import org.hibernate.Transaction;
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.data.provider.cache.CacheProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
-import com.example.jcurrencyapp.data.provider.database.dao.Quotation;
 import com.example.jcurrencyapp.data.provider.database.dao.Country;
 import com.example.jcurrencyapp.data.provider.database.dao.Currency;
 import com.example.jcurrencyapp.data.provider.database.dao.DaoImpl;
 import com.example.jcurrencyapp.data.provider.database.dao.Divergance;
+import com.example.jcurrencyapp.data.provider.database.dao.Quotation;
 import com.example.jcurrencyapp.data.provider.nbp.NbpJsonProviderImpl;
-import com.example.jcurrencyapp.data.provider.nbp.NbpParams;
 import com.example.jcurrencyapp.data.provider.nbp.NbpXmlProviderImpl;
 import com.example.jcurrencyapp.model.CountryTypes;
 import com.example.jcurrencyapp.model.CurrencyTypes;
@@ -64,7 +61,6 @@ public class Demo {
 		EntityManager em = HibernateUtil.getEntityManagerFactory().createEntityManager();
 		Session session = em.unwrap(Session.class);
 		Transaction tx = null;
-		DaoImpl dao = new DaoImpl();
 
 		try {
 			tx = session.beginTransaction();

@@ -13,8 +13,6 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import com.example.jcurrencyapp.Config;
-import com.example.jcurrencyapp.Demo;
-import com.example.jcurrencyapp.data.provider.database.DatabaseProviderImpl;
 import com.example.jcurrencyapp.data.provider.database.dao.DaoImpl;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
