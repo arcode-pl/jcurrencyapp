@@ -7,7 +7,7 @@ import com.example.jcurrencyapp.exceptions.WebApiException;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 
 public class NbpWebApiRequest {
-	private final static String host = "https://api.nbp.pl/api/exchangerates/rates/c/";
+	private final static String host = "https://api.nbp.pl/api/exchangerates/rates/a/";
 
 	public static String getJsonQuery(CurrencyTypes code, LocalDate date) {
 		return getQuery(code, date) + "/?format=json";

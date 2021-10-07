@@ -1,4 +1,4 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.cache;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -28,9 +28,9 @@ public class CacheProviderImplTest {
 		
 		// When
 		cache.saveRate(rate);
-		response = cache.getRate(rate.getCode(), rate.getDate());
+		response = cache.getPrice(rate.getCurrency(), rate.getDate());
 
 		// Then
-		assertThat(response).isEqualTo(rate.getRate());
+		assertThat(response).isEqualTo(rate.getPrice());
 	}
 }

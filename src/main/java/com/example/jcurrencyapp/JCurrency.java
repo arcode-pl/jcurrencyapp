@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.example.jcurrencyapp.data.provider.Provider;
 import com.example.jcurrencyapp.exceptions.ExceptionHandler;
+import com.example.jcurrencyapp.model.CountryTypes;
 import com.example.jcurrencyapp.model.CurrencyTypes;
 import com.example.jcurrencyapp.model.Rate;
 
@@ -33,13 +34,13 @@ public class JCurrency {
 		this.controller.setConfig(config);
 	}
 
-	public Optional<Rate> tryExchange(CurrencyTypes code, BigDecimal quantity, LocalDate date) {
+	public Optional<Rate> tryExchange(CurrencyTypes currency, BigDecimal quantity, LocalDate date) {
 		Optional<Rate> result = Optional.empty();
 		
 		try {
-			validator.validateInputs(code, quantity);
-			Rate rate = controller.getRate(code, validator.fixDate(date));
-			result = Optional.of(new Rate(rate.getCode(), rate.getDate(), rate.getRate().multiply(quantity)));
+			validator.validateInputs(currency, quantity);
+			Rate rate = controller.getPrice(currency, validator.fixDate(date));
+			result = Optional.of(new Rate(rate.getCurrency(), rate.getDate(), rate.getPrice().multiply(quantity)));
 		} catch (RuntimeException ex) {
 			ExceptionHandler.handleException(ex);
 		}
@@ -47,7 +48,27 @@ public class JCurrency {
 		return result;
 	}
 	
-	public void updateRatesFromProvider(Provider provider, CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-			controller.updateRates(provider, code, startDate, endDate);
+	public Optional<CurrencyTypes> getMostUnstableCurrency(LocalDate startDate, LocalDate endDate) {
+		return Optional.ofNullable(controller.getMostUnstableCurrency(startDate, endDate));
+	}
+	
+	public Optional<Rate> getMaxRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
+		return Optional.ofNullable(controller.getMaxRateInDateRange(currency, startDate, endDate));
+	}
+	
+	public Optional<Rate> getMinRateInDateRange(CurrencyTypes currency, LocalDate startDate, LocalDate endDate) {
+		return Optional.ofNullable(controller.getMinRateInDateRange(currency, startDate, endDate));
+	}
+	
+	public Optional<List<Rate>> getBestAskRates(CurrencyTypes currency, long quantity) {
+		return Optional.ofNullable(controller.getBestAskRates(currency, quantity));
+	}
+	
+	public Optional<List<Rate>> getBestBidRates(CurrencyTypes currency, long quantity) {
+		return Optional.ofNullable(controller.getBestBidRates(currency, quantity));
+	}
+	
+	public Optional<CountryTypes> findCountriesWithMultipleCurrency() {
+		return Optional.ofNullable(controller.findCountriesWithMultipleCurrency());
 	}
 }

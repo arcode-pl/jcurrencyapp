@@ -1,13 +1,12 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.nbp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.converter.Converter;
-import com.example.jcurrencyapp.data.converter.nbp.NbpJsonConverterImpl;
-import com.example.jcurrencyapp.data.converter.nbp.NbpParams;
+import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.nbp.converter.NbpJsonConverterImpl;
 import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
 import com.example.jcurrencyapp.io.webapi.WebApiController;
 import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
@@ -16,18 +15,18 @@ import com.example.jcurrencyapp.model.Rate;
 
 public class NbpJsonProviderImpl implements Provider { // is implements need here?
 
-	Converter converter;
+	NbpConverter converter;
 
 	public NbpJsonProviderImpl() {
 		this.converter = new NbpJsonConverterImpl();
 	}
 
 	@Override
-	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+	public BigDecimal getPrice(CurrencyTypes code, LocalDate date) {
 
 		WebApiResponse response = WebApiController.tryReadApi(NbpWebApiRequest.getJsonQuery(code, date));
 		if (response.getCode() == 200) {
-			return converter.getRate(response.getText());
+			return converter.getPrice(response.getText());
 		}
 
 		return null;
@@ -35,8 +34,7 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 
 	@Override
 	public void saveRate(Rate rate) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 
 	@Override
@@ -44,8 +42,8 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 
 		List<Rate> rates = new ArrayList<Rate>();
 		
-		if (startDate.isBefore(NbpParams.startDate)) {
-			startDate = NbpParams.startDate;
+		if (startDate.isBefore(NbpParams.START_DATE)) {
+			startDate = NbpParams.START_DATE;
 		}
 
 		// Get full tables NbpAPI - limitation: max one year date range per call, minimal date is 2002 year, max is today
@@ -68,7 +66,6 @@ public class NbpJsonProviderImpl implements Provider { // is implements need her
 
 	@Override
 	public void saveRates(List<Rate> rates) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 }

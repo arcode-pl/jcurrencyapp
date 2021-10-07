@@ -1,21 +1,21 @@
-package com.example.jcurrencyapp.data.converter.nbp;
+package com.example.jcurrencyapp.data.provider.nbp.converter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.jcurrencyapp.data.converter.Converter;
-import com.example.jcurrencyapp.data.converter.nbp.model.NbpCurrency;
-import com.example.jcurrencyapp.data.converter.nbp.model.NbpRate;
 import com.example.jcurrencyapp.data.parser.XmlParser;
+import com.example.jcurrencyapp.data.provider.nbp.NbpConverter;
+import com.example.jcurrencyapp.data.provider.nbp.converter.model.NbpCurrency;
+import com.example.jcurrencyapp.data.provider.nbp.converter.model.NbpRate;
 import com.example.jcurrencyapp.exceptions.ConverterException;
 import com.example.jcurrencyapp.model.Rate;
 
-public class NbpXmlConverterImpl implements Converter {
+public class NbpXmlConverterImpl implements NbpConverter {
 
 	@Override
-	public BigDecimal getRate(String data) {
+	public BigDecimal getPrice(String data) {
 		XmlParser<NbpCurrency> parser = new XmlParser<NbpCurrency>(NbpCurrency.class);
 
 		try {
@@ -40,7 +40,7 @@ public class NbpXmlConverterImpl implements Converter {
 			Optional<NbpCurrency> currency = parser.deserialize(data);
 			if (currency.isPresent()) {
 				for (NbpRate rate : currency.get().getRates()) {
-					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getAsk()));
+					rates.add(new Rate(currency.get().getCode(), rate.getEffectiveDate(), rate.getMid()));
 				}
 			}
 		} catch (Exception e) {

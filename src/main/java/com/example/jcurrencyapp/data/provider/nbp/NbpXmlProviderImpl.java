@@ -1,13 +1,12 @@
-package com.example.jcurrencyapp.data.provider;
+package com.example.jcurrencyapp.data.provider.nbp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.jcurrencyapp.data.converter.Converter;
-import com.example.jcurrencyapp.data.converter.nbp.NbpParams;
-import com.example.jcurrencyapp.data.converter.nbp.NbpXmlConverterImpl;
+import com.example.jcurrencyapp.data.provider.Provider;
+import com.example.jcurrencyapp.data.provider.nbp.converter.NbpXmlConverterImpl;
 import com.example.jcurrencyapp.io.webapi.NbpWebApiRequest;
 import com.example.jcurrencyapp.io.webapi.WebApiController;
 import com.example.jcurrencyapp.io.webapi.model.WebApiResponse;
@@ -16,18 +15,18 @@ import com.example.jcurrencyapp.model.Rate;
 
 public class NbpXmlProviderImpl implements Provider { // is implements need here?
 
-	Converter converter;
+	NbpConverter converter;
 
 	public NbpXmlProviderImpl() {
 		this.converter = new NbpXmlConverterImpl();
 	}
 
 	@Override
-	public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+	public BigDecimal getPrice(CurrencyTypes code, LocalDate date) {
 
 		WebApiResponse response = WebApiController.tryReadApi(NbpWebApiRequest.getXmlQuery(code, date));
 		if (response.getCode() == 200) {
-			return converter.getRate(response.getText());
+			return converter.getPrice(response.getText());
 		}
 
 		return null;
@@ -35,8 +34,7 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 	@Override
 	public void saveRate(Rate rate) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 
 	@Override
@@ -44,8 +42,8 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 		List<Rate> rates = new ArrayList<Rate>();
 
-		if (startDate.isBefore(NbpParams.startDate)) {
-			startDate = NbpParams.startDate;
+		if (startDate.isBefore(NbpParams.START_DATE)) {
+			startDate = NbpParams.START_DATE;
 		}
 
 		// Get full tables NbpAPI - limitation: max one year date range per call,
@@ -70,8 +68,7 @@ public class NbpXmlProviderImpl implements Provider { // is implements need here
 
 	@Override
 	public void saveRates(List<Rate> rates) {
-		// TODO Auto-generated method stub
-
+		// Intentionally left empty
 	}
 
 }

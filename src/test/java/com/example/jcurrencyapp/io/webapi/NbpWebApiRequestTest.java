@@ -21,8 +21,8 @@ public class NbpWebApiRequestTest {
 	@Test
 	public void shouldReturnValidQuery_WhenGivenJsonOrXmlFormat() {
 		// Given
-		String jsonQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=json";
-		String xmlQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/c/usd/2016-04-12/?format=xml";
+		String jsonQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/a/usd/2016-04-12/?format=json";
+		String xmlQueryValidate = "https://api.nbp.pl/api/exchangerates/rates/a/usd/2016-04-12/?format=xml";
 
 		// When
 		String query = NbpWebApiRequest.getJsonQuery(CurrencyTypes.USD, LocalDate.of(2016, 4, 12));

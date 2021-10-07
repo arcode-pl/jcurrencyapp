@@ -30,7 +30,7 @@ public class ControllerTest {
 		}
 
 		@Override
-		public BigDecimal getRate(CurrencyTypes code, LocalDate date) {
+		public BigDecimal getPrice(CurrencyTypes code, LocalDate date) {
 			BigDecimal result = null;
 
 			if (getRateTimes >= callsToGetData) {
@@ -48,14 +48,12 @@ public class ControllerTest {
 
 		@Override
 		public List<Rate> getRates(CurrencyTypes code, LocalDate startDate, LocalDate endDate) {
-			// TODO Auto-generated method stub
 			return null;
 		}
 
 		@Override
 		public void saveRates(List<Rate> rates) {
-			// TODO Auto-generated method stub
-			
+			// Intentionally left empty
 		}
 	}
 
@@ -75,9 +73,9 @@ public class ControllerTest {
 		// given
 		Provider provider = Mockito.spy(Provider.class);
 		// when
-		provider.getRate(code, date);
+		provider.getPrice(code, date);
 		// then
-		Mockito.verify(provider, Mockito.times(1)).getRate(code, date);
+		Mockito.verify(provider, Mockito.times(1)).getPrice(code, date);
 
 	}
 
@@ -98,7 +96,7 @@ public class ControllerTest {
 		Controller ctrl = new Controller(List.of(provider0, provider1, provider2));
 
 		// When
-		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+		Rate result = ctrl.getPrice(CurrencyTypes.USD, LocalDate.now());
 
 		// Then
 		assertThat(provider0.getRateTimes).isEqualTo(2);
@@ -119,7 +117,7 @@ public class ControllerTest {
 		ctrl.getConfig().setMaxBackDays(1);
 
 		// When
-		Rate result = ctrl.getRate(CurrencyTypes.USD, LocalDate.now());
+		Rate result = ctrl.getPrice(CurrencyTypes.USD, LocalDate.now());
 
 		// Then
 		assertThat(result).isNull();
