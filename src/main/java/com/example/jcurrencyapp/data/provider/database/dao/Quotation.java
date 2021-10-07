@@ -32,10 +32,21 @@ import com.example.jcurrencyapp.model.Rate;
 				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
 				+ Quotation.PARAM_END_DATE),
 
-		@NamedQuery(name = Quotation.FIND_MAX_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " ORDER BY u.price "),
-		@NamedQuery(name = Quotation.FIND_MIN_BY_CODE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
-				+ Quotation.PARAM_CURRENCY + " ORDER BY u.price DESC") })
+		@NamedQuery(name = Quotation.FIND_BY_CODE_ASC_ORDER_BY_PRICE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " ORDER BY u.price ASC"),
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE_ASC_ORDER_BY_PRICE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
+				+ Quotation.PARAM_END_DATE + " ORDER BY u.price ASC"),
+
+		@NamedQuery(name = Quotation.FIND_BY_CODE_DESC_ORDER_BY_PRICE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " ORDER BY u.price DESC"),
+		@NamedQuery(name = Quotation.FIND_BY_CODE_AND_DATE_RANGE_DESC_ORDER_BY_PRICE, query = "SELECT u FROM Quotation u WHERE u.currency = :"
+				+ Quotation.PARAM_CURRENCY + " AND u.date >= :" + Quotation.PARAM_START_DATE + " AND u.date <= :"
+				+ Quotation.PARAM_END_DATE + " ORDER BY u.price DESC"),
+
+		@NamedQuery(name = Quotation.FIND_MOST_UNSTABLE_CURRENCY_BY_DATE_RANGE, query = "SELECT c, (MAX(q.price)-MIN(q.price)) AS d FROM Quotation q JOIN q.currency c WHERE q.date >= :"
+				+ Quotation.PARAM_START_DATE + " AND q.date <= :" + Quotation.PARAM_END_DATE
+				+ " GROUP BY c ORDER BY d DESC") })
 
 @Entity
 @Table(name = "quotation", indexes = @Index(name = "quotation_index", columnList = "date, price"), uniqueConstraints = @UniqueConstraint(name = "quotation_unique", columnNames = {
@@ -46,8 +57,11 @@ public class Quotation {
 	static final String FIND_BY_CODE_AND_DATE = "Quotation.findByCodeAndDate";
 	static final String FIND_BY_CODE_AND_DATE_RANGE = "Quotation.findByCodeAndDateRange";
 
-	static final String FIND_MAX_BY_CODE = "Quotation.findMaxByCode";
-	static final String FIND_MIN_BY_CODE = "Quotation.findMinByCode";
+	static final String FIND_BY_CODE_ASC_ORDER_BY_PRICE = "Quotation.findByCodeAscOrderByPrice";
+	static final String FIND_BY_CODE_AND_DATE_RANGE_ASC_ORDER_BY_PRICE = "Quotation.findByCodeAndDateRangeAscOrderByPrice";
+	static final String FIND_BY_CODE_DESC_ORDER_BY_PRICE = "Quotation.findByCodeDescOrderByPrice";
+	static final String FIND_BY_CODE_AND_DATE_RANGE_DESC_ORDER_BY_PRICE = "Quotation.findByCodeAndDateRangeDescOrderByPrice";
+	static final String FIND_MOST_UNSTABLE_CURRENCY_BY_DATE_RANGE = "Quotation.findMostUnstableCurrencyByDateRange";
 
 	static final String PARAM_DATE = "date";
 	static final String PARAM_START_DATE = "startDate";
@@ -58,7 +72,7 @@ public class Quotation {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private Long quotationId;
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "currencyid", foreignKey = @ForeignKey(name = "currency_fk"))
+	@JoinColumn(name = "currencyid", nullable = false, foreignKey = @ForeignKey(name = "currency_fk"))
 	private Currency currency;
 	LocalDate date;
 	@Column(precision = 16, scale = 8)

@@ -26,7 +26,7 @@ public class DatabaseProviderImpl implements Provider {
 	@Override
 	public BigDecimal getPrice(CurrencyTypes currency, LocalDate date) {
 		try {
-			return dao.findForCurrencyAndData(currency, date).getPrice();
+			return dao.getQuotation(currency, date).getPrice();
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -35,7 +35,7 @@ public class DatabaseProviderImpl implements Provider {
 	@Override
 	public void saveRate(Rate rate) {
 		Currency currency = dao.getCurrency(rate.getCurrency());
-		dao.insertIntoQuotations(Arrays.asList(new Quotation(currency, rate.getDate(), rate.getPrice())));
+		dao.addQuotations(Arrays.asList(new Quotation(currency, rate.getDate(), rate.getPrice())));
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class DatabaseProviderImpl implements Provider {
 		List<Rate> rates = new ArrayList<Rate>();
 
 		try {
-			quotations = dao.findAllForCurrencyWithDataRange(currency, startDate, endDate);
+			quotations = dao.getQuotations(currency, startDate, endDate);
 			for (Quotation quotation : quotations) {
 				rates.add(new Rate(currency, quotation.getDate(), quotation.getPrice()));
 			}
@@ -64,7 +64,7 @@ public class DatabaseProviderImpl implements Provider {
 				Currency currency = dao.getCurrency(rate.getCurrency());
 				quotations.add(new Quotation(currency, rate.getDate(), rate.getPrice()));
 			}
-			dao.insertIntoQuotations(quotations);
+			dao.addQuotations(quotations);
 		}
 	}
 
